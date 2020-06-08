@@ -2,12 +2,13 @@ package main
 
 import (
 	"encoding/json"
-	"go-cryptocurrency/internal/models"
 	"io"
 	"log"
 	"net/http"
 	"os"
 	"time"
+
+	"go-cryptocurrency/internal/models"
 
 	"github.com/davecgh/go-spew/spew"
 	"github.com/gorilla/mux"
