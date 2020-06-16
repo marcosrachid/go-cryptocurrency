@@ -8,7 +8,7 @@ type RewardTransaction struct {
 	TransactionId string            `json:"transaction_id"`
 	Value         float64           `json:"value"`
 	Timestamp     int64             `json:"timestamp"`
-	Coinbases     string            `json:"coinbase"`
+	Coinbase      string            `json:"coinbase"`
 	Difficulty    uint64            `json:"difficulty"`
 	Output        TransactionOutput `json:"output"`
 }
