@@ -5,32 +5,17 @@ import (
 	"time"
 )
 
-type Block interface {
-	GenerateNextBlock(transactions []Transaction) SimpleBlock
-	CalculateHash() string
-}
-
-type GenesisBlock struct {
-	Index     int64  `json:"index"`
-	Timestamp int64  `json:"timestamp"`
-	Data      string `json:"data"`
-	Hash      string `json:"hash"`
-	PrevHash  string `json:"prev_hash"`
-	Nonce     int64  `json:"nonce"`
-}
-
-type SimpleBlock struct {
-	Index     int64         `json:"index"`
+type Block struct {
+	Index     uint64        `json:"index"`
 	Timestamp int64         `json:"timestamp"`
 	Data      []Transaction `json:"data"`
 	Hash      string        `json:"hash"`
 	PrevHash  string        `json:"prev_hash"`
-	Nonce     int64         `json:"nonce"`
+	Nonce     uint64        `json:"nonce"`
 }
 
-// GENESIS METHODS
-func (b GenesisBlock) GenerateNextBlock(transactions []Transaction) SimpleBlock {
-	var newBlock SimpleBlock
+func (b Block) GenerateNextBlock(transactions []Transaction) Block {
+	var newBlock Block
 
 	t := time.Now()
 
@@ -44,35 +29,7 @@ func (b GenesisBlock) GenerateNextBlock(transactions []Transaction) SimpleBlock 
 	return newBlock
 }
 
-func (b GenesisBlock) IsValid() bool {
-	if len(b.Data) <= 0 {
-		return false
-	}
-	return true
-}
-
-func (b GenesisBlock) CalculateHash() string {
-	record := string(b.Index) + string(b.Nonce) + string(b.Timestamp) + string(b.Data) + b.PrevHash
-	return utils.ApplySha256(record)
-}
-
-// SIMPLE BLOCK METHODS
-func (b SimpleBlock) GenerateNextBlock(transactions []Transaction) SimpleBlock {
-	var newBlock SimpleBlock
-
-	t := time.Now()
-
-	newBlock.Index = b.Index + 1
-	newBlock.Timestamp = t.Unix()
-	newBlock.PrevHash = b.Hash
-	newBlock.Data = transactions
-	newBlock.Nonce = 0
-	newBlock.Hash = newBlock.CalculateHash()
-
-	return newBlock
-}
-
-func (b SimpleBlock) IsValid(oldBlock SimpleBlock) bool {
+func (b Block) IsValid(oldBlock Block) bool {
 	if oldBlock.Index+1 != b.Index {
 		return false
 	}
@@ -85,15 +42,15 @@ func (b SimpleBlock) IsValid(oldBlock SimpleBlock) bool {
 	return true
 }
 
-func (b SimpleBlock) CalculateHash() string {
-	record := string(b.Index) + string(b.Nonce) + string(b.Timestamp) + getMerkleRoot(b.Data) + b.PrevHash
+func (b Block) CalculateHash() string {
+	record := string(b.Index) + string(b.Nonce) + string(b.Timestamp) + b.getMerkleRoot() + b.PrevHash
 	return utils.ApplySha256(record)
 }
 
-func getMerkleRoot(transactions []Transaction) string {
-	count := len(transactions)
+func (b Block) getMerkleRoot() string {
+	count := len(b.Data)
 	var previousTreeLayer []string
-	for _, transaction := range transactions {
+	for _, transaction := range b.Data {
 		previousTreeLayer = append(previousTreeLayer, transaction.GetTransactionId())
 	}
 	treeLayer := previousTreeLayer

@@ -9,8 +9,8 @@ type RewardTransaction struct {
 	Value         float64           `json:"value"`
 	Timestamp     int64             `json:"timestamp"`
 	Coinbases     string            `json:"coinbase"`
-	Difficulty    int64             `json:"difficulty"`
-	output        TransactionOutput `json:"output"`
+	Difficulty    uint64            `json:"difficulty"`
+	Output        TransactionOutput `json:"output"`
 }
 
 type SimpleTransaction struct {
@@ -21,8 +21,8 @@ type SimpleTransaction struct {
 	Sender        string              `json:"sender"`
 	FeeValue      float64             `json:"fee_value"`
 	Signature     []byte              `json:"signature"`
-	inputs        []TransactionInput  `json:"inputs"`
-	outputs       []TransactionOutput `json:"outputs"`
+	Inputs        []TransactionInput  `json:"inputs"`
+	Outputs       []TransactionOutput `json:"outputs"`
 }
 
 type TransactionInput struct {
@@ -37,10 +37,10 @@ type TransactionOutput struct {
 	ParentTransactionId string  `json:"parent_transaction_id"`
 }
 
-func (t *RewardTransaction) GetTransactionId() string {
+func (t RewardTransaction) GetTransactionId() string {
 	return t.TransactionId
 }
 
-func (t *SimpleTransaction) GetTransactionId() string {
+func (t SimpleTransaction) GetTransactionId() string {
 	return t.TransactionId
 }
