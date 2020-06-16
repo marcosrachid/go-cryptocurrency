@@ -1,7 +1,7 @@
 package models
 
 import (
-	"go-cryptocurrency/internal/utils"
+	"go-cryptocurrency/pkg/utils"
 	"time"
 )
 

@@ -28,8 +28,6 @@ func main() {
 		Blockchain = append(Blockchain, genesisBlock)
 	}()
 
-	log.Println(Blockchain)
-
 	e := echo.New()
 	e.Logger.Fatal(e.Start(":" + os.Getenv("PORT")))
 }
