@@ -1,9 +1,9 @@
 package main
 
 import (
-	"log"
 	"os"
 
+	"go-cryptocurrency/internal/handler"
 	"go-cryptocurrency/internal/models"
 
 	"github.com/joho/godotenv"
@@ -15,7 +15,12 @@ var Blockchain []models.Block
 func main() {
 	err := godotenv.Load()
 	if err != nil {
-		log.Fatal(err)
+		panic(err)
+	}
+
+	err = handler.KeyStart()
+	if err != nil {
+		panic(err)
 	}
 
 	e := echo.New()
