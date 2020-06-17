@@ -5,7 +5,7 @@ import (
 	"log"
 )
 
-func KeyStart() error {
+func WalletStart() error {
 	key, err := utils.GetKeyFromPEMKey()
 	if err != nil {
 		log.Println("Wallet does not exist...\nAssigning a wallet")
@@ -37,7 +37,7 @@ func KeyStart() error {
 	return err
 }
 
-func KeyGenerate() error {
+func WalletGenerate() error {
 	key, err := utils.GenerateKey()
 	if err != nil {
 		return err

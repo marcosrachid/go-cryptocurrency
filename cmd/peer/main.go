@@ -18,7 +18,7 @@ func main() {
 		panic(err)
 	}
 
-	err = handler.KeyStart()
+	err = handler.WalletStart()
 	if err != nil {
 		panic(err)
 	}
