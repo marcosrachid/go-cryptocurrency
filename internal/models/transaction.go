@@ -20,7 +20,7 @@ type SimpleTransaction struct {
 	Data          string              `json:"data"`
 	Sender        string              `json:"sender"`
 	FeeValue      float64             `json:"fee_value"`
-	Signature     []byte              `json:"signature"`
+	Signature     string              `json:"signature"`
 	Inputs        []TransactionInput  `json:"inputs"`
 	Outputs       []TransactionOutput `json:"outputs"`
 }

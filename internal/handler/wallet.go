@@ -13,7 +13,7 @@ func WalletStart() error {
 		if err != nil {
 			return err
 		}
-		publicKey := key.PublicKey
+		publicKey := &key.PublicKey
 		err = utils.SavePEMKey(key)
 		if err != nil {
 			return err
@@ -42,7 +42,7 @@ func WalletGenerate() error {
 	if err != nil {
 		return err
 	}
-	publicKey := key.PublicKey
+	publicKey := &key.PublicKey
 	err = utils.SavePEMKey(key)
 	if err != nil {
 		return err
