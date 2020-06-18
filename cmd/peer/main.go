@@ -6,8 +6,8 @@ import (
 	"go-cryptocurrency/internal/handler"
 	"go-cryptocurrency/internal/models"
 
+	"github.com/gin-gonic/gin"
 	"github.com/joho/godotenv"
-	"github.com/labstack/echo"
 )
 
 var Blockchain []models.Block
@@ -23,6 +23,8 @@ func main() {
 		panic(err)
 	}
 
-	e := echo.New()
-	e.Logger.Fatal(e.Start(":" + os.Getenv("REST_PORT")))
+	r := gin.Default()
+	r.Use(gin.Logger())
+	r.Use(gin.Recovery())
+	r.Run(":" + os.Getenv("REST_PORT"))
 }

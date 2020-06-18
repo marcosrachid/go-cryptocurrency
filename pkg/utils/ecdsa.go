@@ -108,13 +108,13 @@ func GetPublicKeyStringFromPublicPEMKey() (string, error) {
 	return string(pemString), nil
 }
 
-func GenerateSignature(input string) (string, error) {
+func GenerateSignature(transactionId string) (string, error) {
 	key, err := GetKeyFromPEMKey()
 	if err != nil {
 		return "", err
 	}
-	inputBytes := []byte(input)
-	hashed := sha256.Sum256(inputBytes)
+	transactionIdBytes := []byte(transactionId)
+	hashed := sha256.Sum256(transactionIdBytes)
 	r, s, err := ecdsa.Sign(rand.Reader, key, hashed[:])
 	if err != nil {
 		return "", err
@@ -134,9 +134,9 @@ func GenerateSignature(input string) (string, error) {
 	return signature_hex, nil
 }
 
-func VerifySignature(publicKey *ecdsa.PublicKey, input string, signature string) (bool, error) {
-	inputBytes := []byte(input)
-	hashed := sha256.Sum256(inputBytes)
+func VerifySignature(publicKey *ecdsa.PublicKey, transactionId string, signature string) (bool, error) {
+	transactionIdBytes := []byte(transactionId)
+	hashed := sha256.Sum256(transactionIdBytes)
 	var sig Signature
 	signature_json, err := hex.DecodeString(signature)
 	if err != nil {
