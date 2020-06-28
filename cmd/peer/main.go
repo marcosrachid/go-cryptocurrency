@@ -30,7 +30,7 @@ The commands are:
 	!block 			show block arguments
 	!config			show config arguments
 	!node			show node arguments
-	!transaction	show transaction arguments
+	!transaction		show transaction arguments
 	!wallet			show key arguments
 	!quit			to exit
 	!help			shows help
@@ -46,7 +46,7 @@ Command usage:
 The arguments are:
 	public-key		show current public-key
 	private-key		show current private-key
-	new				generate new wallet
+	new			generate new wallet
 		`,
 	)
 }
