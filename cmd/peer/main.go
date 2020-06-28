@@ -19,6 +19,7 @@ import (
 )
 
 var Blockchain []models.Block
+var s *gosocketio.Server
 
 func showHelp() {
 	fmt.Println(
@@ -58,7 +59,7 @@ func main() {
 	}
 
 	r := gin.Default()
-	s := gosocketio.NewServer(transport.GetDefaultWebsocketTransport())
+	s = gosocketio.NewServer(transport.GetDefaultWebsocketTransport())
 
 	r.Use(gin.Logger())
 	r.Use(gin.Recovery())
@@ -95,22 +96,11 @@ func keyCommands(text string) {
 	case len(splitedText) <= 1:
 		showKeyHelp()
 	case strings.Compare(splitedText[1], "public-key") == 0:
-		publicKeyString, err := utils.GetPublicKeyStringFromPublicPEMKey()
-		if err != nil {
-			panic(err)
-		}
-		fmt.Println(publicKeyString)
+		handler.PrintPublicKey()
 	case strings.Compare(splitedText[1], "private-key") == 0:
-		privateKeyString, err := utils.GetKeyStringFromPEMKey()
-		if err != nil {
-			panic(err)
-		}
-		fmt.Println(privateKeyString)
+		handler.PrintKey()
 	case strings.Compare(splitedText[1], "new") == 0:
-		err := handler.WalletGenerate()
-		if err != nil {
-			panic(err)
-		}
+		handler.WalletGenerate()
 	default:
 		fmt.Printf("Command \"%s\" not found\n", text)
 	}

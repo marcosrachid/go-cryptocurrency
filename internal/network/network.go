@@ -10,7 +10,6 @@ import (
 func NodeHandler(socketServer *gosocketio.Server) gin.HandlerFunc {
 	return func(c *gin.Context) {
 		socketServer.On(gosocketio.OnConnection, node)
-		socketServer.On(gosocketio.OnDisconnection, disconnection)
 		socketServer.ServeHTTP(c.Writer, c.Request)
 	}
 }
@@ -24,8 +23,6 @@ func MinerHandler(socketServer *gosocketio.Server) gin.HandlerFunc {
 }
 
 func node(socket *gosocketio.Channel) {
-	log.Println("channel: ", socket)
-	log.Println("Node Connected")
 }
 
 func miner(socket *gosocketio.Channel) {
