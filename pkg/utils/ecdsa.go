@@ -66,6 +66,14 @@ func GetKeyFromPEMKey() (*ecdsa.PrivateKey, error) {
 	return key, nil
 }
 
+func GetKeyStringFromPEMKey() (string, error) {
+	pemString, err := ioutil.ReadFile(filepath.Join(PATH, filepath.Base(PRIVATE_PEM_NAME)))
+	if err != nil {
+		return "", err
+	}
+	return string(pemString), nil
+}
+
 func SavePublicPEMKey(pubkey *ecdsa.PublicKey) error {
 	keyBytes, err := x509.MarshalPKIXPublicKey(pubkey)
 	if err != nil {
