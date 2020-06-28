@@ -27,9 +27,13 @@ func showHelp() {
 Command usage:
 	<command> [arguments]
 The commands are:
-	!key		show key arguments
-	!quit		to exit
-	!help		shows help
+	!block 			show block arguments
+	!config			show config arguments
+	!node			show node arguments
+	!transaction	show transaction arguments
+	!wallet			show key arguments
+	!quit			to exit
+	!help			shows help
 		`,
 	)
 }
@@ -38,7 +42,7 @@ func showKeyHelp() {
 	fmt.Println(
 		`
 Command usage:
-	!key [arguments]
+	!wallet [arguments]
 The arguments are:
 	public-key		show current public-key
 	private-key		show current private-key
@@ -76,7 +80,7 @@ Loop:
 		fmt.Print(">> ")
 		text := utils.ReadInput()
 		switch {
-		case strings.HasPrefix(text, "!key"):
+		case strings.HasPrefix(text, "!wallet"):
 			keyCommands(text)
 		case strings.Compare(text, "!quit") == 0:
 			break Loop
