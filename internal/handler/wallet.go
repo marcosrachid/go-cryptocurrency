@@ -51,5 +51,10 @@ func WalletGenerate() error {
 	if err != nil {
 		return err
 	}
+	publicKeyString, err := utils.GetPublicKeyStringFromPublicPEMKey()
+	if err != nil {
+		return err
+	}
+	log.Println("Wallet created...\n", publicKeyString)
 	return err
 }

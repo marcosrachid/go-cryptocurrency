@@ -3,6 +3,7 @@ package main
 import (
 	"fmt"
 	"os"
+	"regexp"
 	"strings"
 	"time"
 
@@ -25,10 +26,22 @@ func showHelp() {
 Command usage:
 	<command> [arguments]
 The commands are:
-	!public-key		show current public-key
-	!private-key	show current private-key
-	!quit			to exit
-	!help			shows help
+	!key		show key arguments
+	!quit		to exit
+	!help		shows help
+		`,
+	)
+}
+
+func showKeyHelp() {
+	fmt.Println(
+		`
+Command usage:
+	!key [arguments]
+The arguments are:
+	public-key		show current public-key
+	private-key		show current private-key
+	new				generate new wallet
 		`,
 	)
 }
@@ -62,18 +75,8 @@ Loop:
 		fmt.Print(">> ")
 		text := utils.ReadInput()
 		switch {
-		case strings.Compare(text, "!public-key") == 0:
-			publicKeyString, err := utils.GetPublicKeyStringFromPublicPEMKey()
-			if err != nil {
-				panic(err)
-			}
-			fmt.Println(publicKeyString)
-		case strings.HasPrefix(text, "!private-key"):
-			privateKeyString, err := utils.GetKeyStringFromPEMKey()
-			if err != nil {
-				panic(err)
-			}
-			fmt.Println(privateKeyString)
+		case strings.HasPrefix(text, "!key"):
+			keyCommands(text)
 		case strings.Compare(text, "!quit") == 0:
 			break Loop
 		case strings.Compare(text, "!help") == 0:
@@ -82,5 +85,33 @@ Loop:
 		default:
 			fmt.Printf("Command \"%s\" not found\n", text)
 		}
+	}
+}
+
+func keyCommands(text string) {
+	r := regexp.MustCompile("[^\\s]+")
+	splitedText := r.FindAllString(text, -1)
+	switch {
+	case len(splitedText) <= 1:
+		showKeyHelp()
+	case strings.Compare(splitedText[1], "public-key") == 0:
+		publicKeyString, err := utils.GetPublicKeyStringFromPublicPEMKey()
+		if err != nil {
+			panic(err)
+		}
+		fmt.Println(publicKeyString)
+	case strings.Compare(splitedText[1], "private-key") == 0:
+		privateKeyString, err := utils.GetKeyStringFromPEMKey()
+		if err != nil {
+			panic(err)
+		}
+		fmt.Println(privateKeyString)
+	case strings.Compare(splitedText[1], "new") == 0:
+		err := handler.WalletGenerate()
+		if err != nil {
+			panic(err)
+		}
+	default:
+		fmt.Printf("Command \"%s\" not found\n", text)
 	}
 }
