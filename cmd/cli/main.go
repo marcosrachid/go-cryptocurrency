@@ -104,11 +104,11 @@ yiVVhTpH5PYh6vGiq8QGcqJOvtW6vq3fUGEEJdyXXi77EMgFP7LrdEIhYw==" 1
 	transaction "MFkwEwYHKoZIzj0CAQYIKoZIzj0DAQcDQgAEP2egppaZKvyJ2r6+B2vEBBwSQP0B
 yiVVhTpH5PYh6vGiq8QGcqJOvtW6vq3fUGEEJdyXXi77EMgFP7LrdEIhYw==" 1 "any string"
 	transaction "MFkwEwYHKoZIzj0CAQYIKoZIzj0DAQcDQgAEP2egppaZKvyJ2r6+B2vEBBwSQP0B
-yiVVhTpH5PYh6vGiq8QGcqJOvtW6vq3fUGEEJdyXXi77EMgFP7LrdEIhYw==", "MFkwEwYHKoZIzj0CAQYIKoZIzj0DAQcDQgAEP2egppaZKvyJ2r6+B2vEBBwSQP0B
+yiVVhTpH5PYh6vGiq8QGcqJOvtW6vq3fUGEEJdyXXi77EMgFP7LrdEIhYw==","MFkwEwYHKoZIzj0CAQYIKoZIzj0DAQcDQgAEP2egppaZKvyJ2r6+B2vEBBwSQP0B
 yiVVhTpH5PYh6vGiq8QGcqJOvtW6vq3fUGEEJdyXXi77EMgFP7LrdEIhYw==" 1,10
 	transaction "MFkwEwYHKoZIzj0CAQYIKoZIzj0DAQcDQgAEP2egppaZKvyJ2r6+B2vEBBwSQP0B
-yiVVhTpH5PYh6vGiq8QGcqJOvtW6vq3fUGEEJdyXXi77EMgFP7LrdEIhYw==", "MFkwEwYHKoZIzj0CAQYIKoZIzj0DAQcDQgAEP2egppaZKvyJ2r6+B2vEBBwSQP0B
-yiVVhTpH5PYh6vGiq8QGcqJOvtW6vq3fUGEEJdyXXi77EMgFP7LrdEIhYw==" 1,10 "string 1", "string 2"
+yiVVhTpH5PYh6vGiq8QGcqJOvtW6vq3fUGEEJdyXXi77EMgFP7LrdEIhYw==","MFkwEwYHKoZIzj0CAQYIKoZIzj0DAQcDQgAEP2egppaZKvyJ2r6+B2vEBBwSQP0B
+yiVVhTpH5PYh6vGiq8QGcqJOvtW6vq3fUGEEJdyXXi77EMgFP7LrdEIhYw==" 1,10 "string 1","string 2"
 		`,
 	)
 }
@@ -119,8 +119,8 @@ func showKeyHelp() {
 Command usage:
 	wallet [arguments]
 The arguments are:
-	-pu, --public-key		show current public-key
-	-pr, --private-key		show current private-key
+	-p, --public-key		show current public-key
+	-k, --private-key		show current private-key
 	-n, --new			generate new wallet
 	-h, --help			shows help
 		`,
@@ -158,9 +158,9 @@ func keyCommands(arguments []string) {
 	switch {
 	case len(arguments) <= 0 || strings.Compare(arguments[0], "-h") == 0 || strings.Compare(arguments[0], "--help") == 0:
 		showKeyHelp()
-	case strings.Compare(arguments[0], "-pu") == 0 || strings.Compare(arguments[0], "--public-key") == 0:
+	case strings.Compare(arguments[0], "-p") == 0 || strings.Compare(arguments[0], "--public-key") == 0:
 		handler.PrintPublicKey()
-	case strings.Compare(arguments[0], "-pr") == 0 || strings.Compare(arguments[0], "--private-key") == 0:
+	case strings.Compare(arguments[0], "-k") == 0 || strings.Compare(arguments[0], "--private-key") == 0:
 		handler.PrintKey()
 	case strings.Compare(arguments[0], "-n") == 0 || strings.Compare(arguments[0], "--new") == 0:
 		handler.WalletGenerate()
