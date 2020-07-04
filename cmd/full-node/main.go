@@ -1,7 +1,6 @@
 package main
 
 import (
-	"log"
 	"os"
 
 	"go-cryptocurrency/internal/handler"
@@ -16,7 +15,7 @@ var Blockchain []models.Block
 func main() {
 	err := godotenv.Load()
 	if err != nil {
-		log.Fatal(err)
+		panic(err)
 	}
 
 	err = handler.WalletStart()

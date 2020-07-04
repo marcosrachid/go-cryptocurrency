@@ -2,7 +2,8 @@ package constants
 
 import "go-cryptocurrency/internal/models"
 
-var PEERS [1]models.Peer = [1]models.Peer{
-	models.Peer{"main-node.coin.com", 8888},
+var PEERS []models.Peer = []models.Peer{
+	models.Peer{"main-node.coin.com", 8888, "miner"},
 }
+
 var TRANSACTION_SEQUENCE = 0
