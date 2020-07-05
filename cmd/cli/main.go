@@ -16,10 +16,10 @@ func main() {
 	argsWithProg := os.Args
 	argsWithoutProg := os.Args[1:]
 	if len(argsWithProg) <= 1 {
-		network.SocketClient(os.Getenv("NODE_HOST"), os.Getenv("CLI_PORT"), models.CLIRequest{})
+		network.SocketClient(os.Getenv("CLI_HOST"), os.Getenv("CLI_PORT"), models.CLIRequest{})
 		return
 	}
 	command := argsWithoutProg[0]
 	arguments := argsWithoutProg[1:]
-	network.SocketClient(os.Getenv("NODE_HOST"), os.Getenv("CLI_PORT"), models.CLIRequest{command, arguments})
+	network.SocketClient(os.Getenv("CLI_HOST"), os.Getenv("CLI_PORT"), models.CLIRequest{command, arguments})
 }

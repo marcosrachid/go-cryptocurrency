@@ -120,7 +120,7 @@ func networkCommands(arguments []string, writer *bufio.Writer) {
 	case strings.Compare(arguments[0], "-r") == 0 || strings.Compare(arguments[0], "--reward") == 0:
 		answer(fmt.Sprintf("%.16f", global.REWARD), writer)
 	case strings.Compare(arguments[0], "-f") == 0 || strings.Compare(arguments[0], "--fees") == 0:
-		answer(fmt.Sprintf("%.16f", global.FEES), writer)
+		answer(fmt.Sprintf("%.16f%%", global.FEES*100), writer)
 	case strings.Compare(arguments[0], "-b") == 0 || strings.Compare(arguments[0], "--block-size") == 0:
 		answer(fmt.Sprintf("%d bytes", global.BLOCK_SIZE), writer)
 	default:
