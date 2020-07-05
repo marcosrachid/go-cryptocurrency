@@ -37,39 +37,47 @@ func WalletStart() error {
 	return err
 }
 
-func GetKey() string {
+func GetKey() (string, error) {
 	privateKeyString, err := utils.GetKeyStringFromPEMKey()
 	if err != nil {
-		panic(err)
+		return "", err
 	}
-	return privateKeyString
+	return privateKeyString, nil
 }
 
-func GetPublicKey() string {
+func GetPublicKey() (string, error) {
 	publicKeyString, err := utils.GetPublicKeyStringFromPublicPEMKey()
 	if err != nil {
-		panic(err)
+		return "", err
 	}
-	return publicKeyString
+	return publicKeyString, nil
 }
 
-func WalletGenerate() string {
+func WalletGenerate() (string, error) {
 	key, err := utils.GenerateKey()
 	if err != nil {
-		panic(err)
+		return "", err
 	}
 	publicKey := &key.PublicKey
 	err = utils.SavePEMKey(key)
 	if err != nil {
-		panic(err)
+		return "", err
 	}
 	err = utils.SavePublicPEMKey(publicKey)
 	if err != nil {
-		panic(err)
+		return "", err
 	}
 	publicKeyString, err := utils.GetPublicKeyStringFromPublicPEMKey()
 	if err != nil {
-		panic(err)
+		return "", err
 	}
-	return publicKeyString
+	return publicKeyString, nil
+}
+
+func WalletImport(arguments []string) (string, error) {
+	return "", nil
+}
+
+func Balance(arguments []string) (string, error) {
+	return "", nil
 }
