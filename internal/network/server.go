@@ -2,6 +2,7 @@ package network
 
 import (
 	"bufio"
+	"go-cryptocurrency/internal/global"
 	"io"
 	"log"
 	"net"
@@ -9,11 +10,7 @@ import (
 	"strings"
 )
 
-const (
-	END = "\r\n\r\n"
-)
-
-func SocketServer(port string) {
+func SocketServer(port string, handler func(string, *bufio.Writer)) {
 
 	listen, err := net.Listen("tcp4", ":"+port)
 
@@ -46,12 +43,11 @@ func SocketServer(port string) {
 			for {
 				n, err := r.Read(buf)
 				data := string(buf[:n])
-
 				switch err {
 				case io.EOF:
 					break ILOOP
 				case nil:
-					Handle(data, w)
+					handler(data, w)
 					if isTransportOver(data) {
 						break ILOOP
 					}
@@ -68,6 +64,6 @@ func SocketServer(port string) {
 }
 
 func isTransportOver(data string) (over bool) {
-	over = strings.HasSuffix(data, END)
+	over = strings.HasSuffix(data, global.END)
 	return
 }

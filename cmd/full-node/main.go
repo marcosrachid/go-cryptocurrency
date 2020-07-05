@@ -3,9 +3,10 @@ package main
 import (
 	"os"
 
-	"go-cryptocurrency/internal/handler"
 	"go-cryptocurrency/internal/models"
 	"go-cryptocurrency/internal/network"
+	"go-cryptocurrency/internal/network/handler"
+	"go-cryptocurrency/internal/services"
 
 	"github.com/joho/godotenv"
 )
@@ -18,10 +19,11 @@ func main() {
 		panic(err)
 	}
 
-	err = handler.WalletStart()
+	err = services.WalletStart()
 	if err != nil {
 		panic(err)
 	}
 
-	network.SocketServer(os.Getenv("NETWORK_PORT"))
+	go network.SocketServer(os.Getenv("CLI_PORT"), handler.CliHandler)
+	network.SocketServer(os.Getenv("NETWORK_PORT"), handler.DispatcherHandler)
 }

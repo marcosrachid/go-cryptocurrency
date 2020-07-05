@@ -1,7 +1,6 @@
-package handler
+package services
 
 import (
-	"fmt"
 	"go-cryptocurrency/pkg/utils"
 	"log"
 )
@@ -38,23 +37,23 @@ func WalletStart() error {
 	return err
 }
 
-func PrintKey() {
+func GetKey() string {
 	privateKeyString, err := utils.GetKeyStringFromPEMKey()
 	if err != nil {
 		panic(err)
 	}
-	fmt.Println(privateKeyString)
+	return privateKeyString
 }
 
-func PrintPublicKey() {
+func GetPublicKey() string {
 	publicKeyString, err := utils.GetPublicKeyStringFromPublicPEMKey()
 	if err != nil {
 		panic(err)
 	}
-	fmt.Println(publicKeyString)
+	return publicKeyString
 }
 
-func WalletGenerate() {
+func WalletGenerate() string {
 	key, err := utils.GenerateKey()
 	if err != nil {
 		panic(err)
@@ -72,5 +71,5 @@ func WalletGenerate() {
 	if err != nil {
 		panic(err)
 	}
-	log.Println("Wallet created...\n", publicKeyString)
+	return publicKeyString
 }
