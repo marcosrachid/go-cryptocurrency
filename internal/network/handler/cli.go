@@ -37,7 +37,6 @@ The arguments are:
 Command usage:
 	network [arguments]
 The arguments are:
-	-v, --version			show network version
 	-s, --supply-limit		show supply limit
 	-m, --minimum-transaction	show minimum transaction value accepted above zero
 	-c, --circulating-supply	show current circulating supply
@@ -109,6 +108,20 @@ func networkCommands(arguments []string, writer *bufio.Writer) {
 	switch {
 	case len(arguments) <= 0 || strings.Compare(arguments[0], "-h") == 0 || strings.Compare(arguments[0], "--help") == 0:
 		answer(NETWORK_HELP, writer)
+	case strings.Compare(arguments[0], "-s") == 0 || strings.Compare(arguments[0], "--supply-limit") == 0:
+		answer(fmt.Sprintf("%.16f", global.SUPPLY_LIMIT), writer)
+	case strings.Compare(arguments[0], "-m") == 0 || strings.Compare(arguments[0], "--minimum-transaction") == 0:
+		answer(fmt.Sprintf("%.16f", global.MINIMUM_TRANSACTION), writer)
+	case strings.Compare(arguments[0], "-c") == 0 || strings.Compare(arguments[0], "--circulating-supply") == 0:
+		answer(fmt.Sprintf("%.16f", global.CIRCULATING_SUPPLY), writer)
+	case strings.Compare(arguments[0], "-d") == 0 || strings.Compare(arguments[0], "--difficulty") == 0:
+		answer(fmt.Sprintf("%d", global.DIFFICULTY), writer)
+	case strings.Compare(arguments[0], "-r") == 0 || strings.Compare(arguments[0], "--reward") == 0:
+		answer(fmt.Sprintf("%.16f", global.REWARD), writer)
+	case strings.Compare(arguments[0], "-f") == 0 || strings.Compare(arguments[0], "--fees") == 0:
+		answer(fmt.Sprintf("%.16f", global.FEES), writer)
+	case strings.Compare(arguments[0], "-b") == 0 || strings.Compare(arguments[0], "--block-size") == 0:
+		answer(fmt.Sprintf("%d bytes", global.BLOCK_SIZE), writer)
 	default:
 		answer(fmt.Sprintf("Command \"block %s\" not found", strings.Join(arguments, " ")), writer)
 	}
@@ -140,5 +153,6 @@ func keyCommands(arguments []string, writer *bufio.Writer) {
 
 func answer(data string, writer *bufio.Writer) {
 	writer.Write([]byte(data))
+	writer.Write([]byte(global.END))
 	writer.Flush()
 }
