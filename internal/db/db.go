@@ -7,28 +7,28 @@ import (
 )
 
 type DBs struct {
-	BlockIndex *leveldb.DB
-	Chainstate *leveldb.DB
-	Mempool    *leveldb.DB
+	Block     *leveldb.DB
+	UTXOState *leveldb.DB
+	Mempool   *leveldb.DB
 }
 
 var Instance *DBs = nil
 
 func Start() error {
 	Instance = new(DBs)
-	if Instance.BlockIndex == nil {
-		db, err := leveldb.OpenFile(os.Getenv("DB_PATH")+"/block-index.db", nil)
+	if Instance.Block == nil {
+		db, err := leveldb.OpenFile(os.Getenv("DB_PATH")+"/block.db", nil)
 		if err != nil {
 			return err
 		}
-		Instance.BlockIndex = db
+		Instance.Block = db
 	}
-	if Instance.Chainstate == nil {
-		db, err := leveldb.OpenFile(os.Getenv("DB_PATH")+"/chainstate.db", nil)
+	if Instance.UTXOState == nil {
+		db, err := leveldb.OpenFile(os.Getenv("DB_PATH")+"/utxo.db", nil)
 		if err != nil {
 			return err
 		}
-		Instance.Chainstate = db
+		Instance.UTXOState = db
 	}
 	if Instance.Mempool == nil {
 		db, err := leveldb.OpenFile(os.Getenv("DB_PATH")+"/mempool.db", nil)
@@ -41,7 +41,7 @@ func Start() error {
 }
 
 func Stop() {
-	Instance.BlockIndex.Close()
-	Instance.Chainstate.Close()
+	Instance.Block.Close()
+	Instance.UTXOState.Close()
 	Instance.Mempool.Close()
 }

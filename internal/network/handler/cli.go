@@ -30,8 +30,8 @@ Command usage:
 The arguments are:
 	empty or [0-9]+ or [a-z0-9]{64}			show current block or from specified height or from specified hash
 	-e, --height empty or [a-z0-9]{64} 		show current height or from specified hash
-	-x, --hash empty or [0-9]+				show current hash or from specified height
-	-h, --help						shows help
+	-x, --hash empty or [0-9]+			show current hash or from specified height
+	-h, --help					shows help
 `
 	NETWORK_HELP = `
 Command usage:
@@ -91,16 +91,16 @@ func CliHandler(data string, writer *bufio.Writer) {
 
 func blockCommands(arguments []string, writer *bufio.Writer) {
 	switch {
-	case len(arguments) <= 0 || strings.Compare(arguments[0], "-h") == 0 || strings.Compare(arguments[0], "--help") == 0:
+	case len(arguments) > 0 && (strings.Compare(arguments[0], "-h") == 0 || strings.Compare(arguments[0], "--help") == 0):
 		answer(BLOCK_HELP, writer)
-	case strings.Compare(arguments[0], "-e") == 0 || strings.Compare(arguments[0], "--height") == 0:
+	case len(arguments) > 0 && (strings.Compare(arguments[0], "-e") == 0 || strings.Compare(arguments[0], "--height") == 0):
 		response, err := services.GetHeight(arguments[1:])
 		answerWithError(response, err, writer)
-	case strings.Compare(arguments[0], "-x") == 0 || strings.Compare(arguments[0], "--hash") == 0:
+	case len(arguments) > 0 && (strings.Compare(arguments[0], "-x") == 0 || strings.Compare(arguments[0], "--hash") == 0):
 		response, err := services.GetHash(arguments[1:])
 		answerWithError(response, err, writer)
 	default:
-		response, err := services.GetBlock(arguments[1:])
+		response, err := services.GetBlock(arguments)
 		answerWithError(response, err, writer)
 	}
 }

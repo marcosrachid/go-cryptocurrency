@@ -6,7 +6,7 @@ import (
 )
 
 type Block struct {
-	Index     uint64        `json:"index"`
+	Height    uint64        `json:"height"`
 	Timestamp int64         `json:"timestamp"`
 	Data      []Transaction `json:"data"`
 	Hash      string        `json:"hash"`
@@ -19,7 +19,7 @@ func (b Block) GenerateNextBlock(transactions []Transaction) Block {
 
 	t := time.Now()
 
-	newBlock.Index = b.Index + 1
+	newBlock.Height = b.Height + 1
 	newBlock.Timestamp = t.Unix()
 	newBlock.PrevHash = b.Hash
 	newBlock.Data = transactions
@@ -30,7 +30,7 @@ func (b Block) GenerateNextBlock(transactions []Transaction) Block {
 }
 
 func (b Block) IsValid(oldBlock Block) bool {
-	if oldBlock.Index+1 != b.Index {
+	if oldBlock.Height+1 != b.Height {
 		return false
 	}
 	if oldBlock.Hash != b.PrevHash {
@@ -43,7 +43,7 @@ func (b Block) IsValid(oldBlock Block) bool {
 }
 
 func (b Block) CalculateHash() string {
-	record := string(b.Index) + string(b.Nonce) + string(b.Timestamp) + b.getMerkleRoot() + b.PrevHash
+	record := string(b.Height) + string(b.Nonce) + string(b.Timestamp) + b.getMerkleRoot() + b.PrevHash
 	return utils.ApplySha256(record)
 }
 
