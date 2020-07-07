@@ -1,21 +1,25 @@
 package models
 
 import (
+	"encoding/json"
 	"fmt"
 	"go-cryptocurrency/pkg/utils"
+	"strings"
 	"time"
 )
 
+type BlockData []Transaction
+
 type Block struct {
-	Height     uint64        `json:"height"`
-	Timestamp  uint64        `json:"timestamp"`
-	Data       []Transaction `json:"data"`
-	Hash       string        `json:"hash"`
-	PrevHash   string        `json:"prev_hash"`
-	MerkleRoot string        `json:"merkle_root"`
-	Difficulty uint8         `json:"difficulty"`
-	Miner      string        `json:"miner"`
-	Nonce      uint64        `json:"nonce"`
+	Height     uint64    `json:"height"`
+	Timestamp  uint64    `json:"timestamp"`
+	Data       BlockData `json:"data"`
+	Hash       string    `json:"hash"`
+	PrevHash   string    `json:"prev_hash"`
+	MerkleRoot string    `json:"merkle_root"`
+	Difficulty uint8     `json:"difficulty"`
+	Miner      string    `json:"miner"`
+	Nonce      uint64    `json:"nonce"`
 }
 
 func (b Block) GenerateNextBlock(miner string, difficulty uint8, transactions []Transaction) Block {
@@ -93,4 +97,28 @@ func (b *Block) calculateMerkleRoot() {
 		merkleRoot = treeLayer[0]
 	}
 	b.MerkleRoot = merkleRoot
+}
+
+func (bd *BlockData) UnmarshalJSON(data []byte) error {
+	transactions := make([]json.RawMessage, 0)
+	err := json.Unmarshal(data, &transactions)
+	if err != nil {
+		return err
+	}
+	results := make(BlockData, 0)
+	for _, v := range transactions {
+		var t Transaction
+		if !strings.Contains(string(v), "coinbase") {
+			t = &SimpleTransaction{}
+		} else {
+			t = &RewardTransaction{}
+		}
+		results = append(results, t)
+		err := json.Unmarshal(v, t)
+		if err != nil {
+			return err
+		}
+	}
+	*bd = results
+	return nil
 }

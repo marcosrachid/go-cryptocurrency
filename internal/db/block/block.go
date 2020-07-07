@@ -17,9 +17,9 @@ func GetByHeight(height uint64) (*models.Block, error) {
 	if err != nil {
 		return nil, err
 	}
-	block := &models.Block{}
-	json.Unmarshal(response, block)
-	return block, nil
+	var block models.Block
+	json.Unmarshal(response, &block)
+	return &block, nil
 }
 
 func GetByHash(hash string) (*models.Block, error) {
@@ -31,9 +31,9 @@ func GetByHash(hash string) (*models.Block, error) {
 	if err != nil {
 		return nil, err
 	}
-	block := &models.Block{}
-	json.Unmarshal(response, block)
-	return block, nil
+	var block models.Block
+	json.Unmarshal(response, &block)
+	return &block, nil
 }
 
 func GetLast() (*models.Block, error) {
@@ -45,9 +45,9 @@ func GetLast() (*models.Block, error) {
 	if err != nil {
 		return nil, err
 	}
-	block := &models.Block{}
-	json.Unmarshal(response, block)
-	return block, nil
+	var block models.Block
+	json.Unmarshal(response, &block)
+	return &block, nil
 }
 
 func DeleteByHeight(height uint64) error {
