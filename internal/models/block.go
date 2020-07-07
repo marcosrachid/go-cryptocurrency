@@ -1,53 +1,79 @@
 package models
 
 import (
+	"fmt"
 	"go-cryptocurrency/pkg/utils"
 	"time"
 )
 
 type Block struct {
-	Height    uint64        `json:"height"`
-	Timestamp int64         `json:"timestamp"`
-	Data      []Transaction `json:"data"`
-	Hash      string        `json:"hash"`
-	PrevHash  string        `json:"prev_hash"`
-	Nonce     uint64        `json:"nonce"`
+	Height     uint64        `json:"height"`
+	Timestamp  int64         `json:"timestamp"`
+	Data       []Transaction `json:"data"`
+	Hash       string        `json:"hash"`
+	PrevHash   string        `json:"prev_hash"`
+	MerkleRoot string        `json:"merkle_root"`
+	Difficulty uint64        `json:"difficulty"`
+	Miner      string        `json:"miner"`
+	Nonce      uint64        `json:"nonce"`
 }
 
-func (b Block) GenerateNextBlock(transactions []Transaction) Block {
+func (b Block) GenerateNextBlock(miner string, difficulty uint64, transactions []Transaction) Block {
 	var newBlock Block
 
 	t := time.Now()
 
-	newBlock.Height = b.Height + 1
+	if b.Timestamp == 0 {
+		newBlock.Height = 0
+		newBlock.PrevHash = "0"
+	} else {
+		newBlock.Height = b.Height + 1
+		newBlock.PrevHash = b.Hash
+	}
 	newBlock.Timestamp = t.Unix()
-	newBlock.PrevHash = b.Hash
+	newBlock.Difficulty = difficulty
 	newBlock.Data = transactions
+	newBlock.Miner = miner
 	newBlock.Nonce = 0
-	newBlock.Hash = newBlock.CalculateHash()
+	newBlock.calculateMerkleRoot()
+	newBlock.calculateHash()
 
 	return newBlock
 }
 
-func (b Block) IsValid(oldBlock Block) bool {
-	if oldBlock.Height+1 != b.Height {
+func (b Block) IsValid(oldBlock Block, difficulty uint64) bool {
+	if b.Height != 0 && oldBlock.Height+1 != b.Height {
 		return false
 	}
-	if oldBlock.Hash != b.PrevHash {
+	if b.Height != 0 && oldBlock.Hash != b.PrevHash {
 		return false
 	}
-	if len(b.Data) <= 0 {
+	difficultyString := ""
+	for len(difficultyString) < int(difficulty) {
+		difficultyString += "0"
+	}
+	if runes := []rune(b.Hash); string(runes[0:difficulty]) != difficultyString {
 		return false
 	}
 	return true
 }
 
-func (b Block) CalculateHash() string {
-	record := string(b.Height) + string(b.Nonce) + string(b.Timestamp) + b.getMerkleRoot() + b.PrevHash
-	return utils.ApplySha256(record)
+func (b *Block) Mine(difficulty uint64) {
+	difficultyString := ""
+	for len(difficultyString) < int(difficulty) {
+		difficultyString += "0"
+	}
+	for runes := []rune(b.Hash); string(runes[0:difficulty]) != difficultyString; runes = []rune(b.Hash) {
+		b.Nonce++
+		b.calculateHash()
+	}
 }
 
-func (b Block) getMerkleRoot() string {
+func (b *Block) calculateHash() {
+	b.Hash = utils.ApplySha256(fmt.Sprintf("%d", b.Height) + fmt.Sprintf("%d", b.Nonce) + fmt.Sprintf("%d", b.Timestamp) + b.MerkleRoot + b.PrevHash)
+}
+
+func (b *Block) calculateMerkleRoot() {
 	count := len(b.Data)
 	var previousTreeLayer []string
 	for _, transaction := range b.Data {
@@ -66,5 +92,5 @@ func (b Block) getMerkleRoot() string {
 	if len(treeLayer) == 1 {
 		merkleRoot = treeLayer[0]
 	}
-	return merkleRoot
+	b.MerkleRoot = merkleRoot
 }

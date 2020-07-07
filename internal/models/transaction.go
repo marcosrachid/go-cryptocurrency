@@ -1,7 +1,14 @@
 package models
 
+import (
+	"fmt"
+	"go-cryptocurrency/pkg/utils"
+	"time"
+)
+
 type Transaction interface {
 	GetTransactionId() string
+	calculateHash(sequence uint64, difficulty uint64)
 }
 
 type RewardTransaction struct {
@@ -9,7 +16,6 @@ type RewardTransaction struct {
 	Value         float64           `json:"value"`
 	Timestamp     int64             `json:"timestamp"`
 	Coinbase      string            `json:"coinbase"`
-	Difficulty    uint64            `json:"difficulty"`
 	Output        TransactionOutput `json:"output"`
 }
 
@@ -41,6 +47,33 @@ func (t RewardTransaction) GetTransactionId() string {
 	return t.TransactionId
 }
 
+func (t *RewardTransaction) calculateHash(sequence uint64, difficulty uint64) {
+	t.TransactionId = utils.ApplySha256(t.Coinbase + fmt.Sprintf("%v", t.Output) + fmt.Sprintf("%d", difficulty) + fmt.Sprintf("%d", t.Timestamp) + fmt.Sprint("%d", sequence))
+	t.Output.ParentTransactionId = t.TransactionId
+}
+
+func (t *RewardTransaction) calculateCoinbase(difficulty uint64, sequence uint64, coinbase string) {
+	t.Coinbase = utils.ApplySha256(fmt.Sprintf("%d", difficulty) + fmt.Sprintf("%d", t.Timestamp) + fmt.Sprintf("%d", sequence) + coinbase)
+}
+
+func CreateRewardTransaction(reciepient string, rewardValue float64, sequence uint64, difficulty uint64, coinbase string) RewardTransaction {
+	transactionOutput := TransactionOutput{"", reciepient, rewardValue, ""}
+	transactionOutput.calculateHash()
+	t := time.Now()
+	transaction := RewardTransaction{"", rewardValue, t.Unix(), "", transactionOutput}
+	transaction.calculateCoinbase(sequence, difficulty, coinbase)
+	transaction.calculateHash(sequence, difficulty)
+	return transaction
+}
+
 func (t SimpleTransaction) GetTransactionId() string {
 	return t.TransactionId
+}
+
+func (t *SimpleTransaction) calculateHash(sequence uint64, difficulty uint64) {
+	t.TransactionId = utils.ApplySha256(t.Sender + fmt.Sprintf("%v", t.Inputs) + fmt.Sprintf("%v", t.Outputs) + fmt.Sprintf("%d", difficulty) + fmt.Sprintf("%d", t.Timestamp) + fmt.Sprint("%d", sequence))
+}
+
+func (to *TransactionOutput) calculateHash() {
+	to.Id = utils.ApplySha256(to.Reciepient + fmt.Sprintf("%.16f", to.Value))
 }
