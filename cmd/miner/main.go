@@ -5,6 +5,7 @@ import (
 	"os"
 
 	"go-cryptocurrency/internal/db"
+	"go-cryptocurrency/internal/global"
 	"go-cryptocurrency/internal/miner"
 	"go-cryptocurrency/internal/models"
 	"go-cryptocurrency/internal/network"
@@ -32,6 +33,8 @@ func main() {
 		panic(err)
 	}
 	defer db.Stop()
+
+	global.Load()
 
 	go network.SocketServer(os.Getenv("CLI_PORT"), handler.CliHandler)
 	go network.SocketServer(os.Getenv("NETWORK_PORT"), handler.DispatcherHandler)

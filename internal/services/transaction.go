@@ -1,5 +1,7 @@
 package services
 
-func SendTransaction(arguments []string) (string, error) {
-	return "", nil
+import "go-cryptocurrency/internal/models"
+
+func SendTransaction(arguments []string) (*models.SimpleTransaction, error) {
+	return nil, nil
 }

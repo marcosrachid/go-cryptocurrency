@@ -95,7 +95,7 @@ func blockCommands(arguments []string, writer *bufio.Writer) {
 		answer(BLOCK_HELP, writer)
 	case len(arguments) > 0 && (strings.Compare(arguments[0], "-e") == 0 || strings.Compare(arguments[0], "--height") == 0):
 		response, err := services.GetHeight(arguments[1:])
-		answerWithError(response, err, writer)
+		answerWithError(fmt.Sprintf("%d", response), err, writer)
 	case len(arguments) > 0 && (strings.Compare(arguments[0], "-x") == 0 || strings.Compare(arguments[0], "--hash") == 0):
 		response, err := services.GetHash(arguments[1:])
 		answerWithError(response, err, writer)
@@ -114,9 +114,11 @@ func networkCommands(arguments []string, writer *bufio.Writer) {
 	case strings.Compare(arguments[0], "-m") == 0 || strings.Compare(arguments[0], "--minimum-transaction") == 0:
 		answer(fmt.Sprintf("%.16f", global.MINIMUM_TRANSACTION), writer)
 	case strings.Compare(arguments[0], "-c") == 0 || strings.Compare(arguments[0], "--circulating-supply") == 0:
-		answer(fmt.Sprintf("%.16f", global.CIRCULATING_SUPPLY), writer)
+		response, err := services.GetCirculatingSupply()
+		answerWithError(fmt.Sprintf("%.16f", response), err, writer)
 	case strings.Compare(arguments[0], "-d") == 0 || strings.Compare(arguments[0], "--difficulty") == 0:
-		answer(fmt.Sprintf("%d", global.DIFFICULTY), writer)
+		response, err := services.GetDifficulty()
+		answerWithError(fmt.Sprintf("%d", response), err, writer)
 	case strings.Compare(arguments[0], "-r") == 0 || strings.Compare(arguments[0], "--reward") == 0:
 		answer(fmt.Sprintf("%.16f", global.REWARD), writer)
 	case strings.Compare(arguments[0], "-f") == 0 || strings.Compare(arguments[0], "--fees") == 0:
@@ -134,7 +136,12 @@ func transactionCommands(arguments []string, writer *bufio.Writer) {
 		answer(TRANSACTION_HELP, writer)
 	default:
 		response, err := services.SendTransaction(arguments)
-		answerWithError(response, err, writer)
+		if err != nil {
+			answerWithError("", err, writer)
+		} else {
+			r, _ := json.Marshal(response)
+			answer(string(r), writer)
+		}
 	}
 }
 
@@ -156,7 +163,7 @@ func keyCommands(arguments []string, writer *bufio.Writer) {
 		answerWithError(response, err, writer)
 	case strings.Compare(arguments[0], "-b") == 0 || strings.Compare(arguments[0], "--balance") == 0:
 		response, err := services.Balance(arguments[1:])
-		answerWithError(response, err, writer)
+		answerWithError(fmt.Sprintf("%.16f", response), err, writer)
 	default:
 		answer(fmt.Sprintf("Command \"wallet %s\" not found", strings.Join(arguments, " ")), writer)
 	}

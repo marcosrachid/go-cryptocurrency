@@ -78,6 +78,6 @@ func WalletImport(arguments []string) (string, error) {
 	return "", nil
 }
 
-func Balance(arguments []string) (string, error) {
-	return "", nil
+func Balance(arguments []string) (float64, error) {
+	return 0.0, nil
 }

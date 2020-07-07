@@ -41,7 +41,7 @@ func (b Block) GenerateNextBlock(miner string, difficulty uint64, transactions [
 	return newBlock
 }
 
-func (b Block) IsValid(oldBlock Block, difficulty uint64) bool {
+func (b Block) IsValid(oldBlock *Block, difficulty uint64) bool {
 	if b.Height != 0 && oldBlock.Height+1 != b.Height {
 		return false
 	}
