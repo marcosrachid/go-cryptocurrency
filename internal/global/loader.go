@@ -10,4 +10,5 @@ func Load() {
 		return
 	}
 	CURRENT_BLOCK = block
+	NETWORK_HEIGHT = block.Height
 }
