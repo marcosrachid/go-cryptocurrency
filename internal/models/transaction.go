@@ -8,7 +8,7 @@ import (
 
 type Transaction interface {
 	GetTransactionId() string
-	calculateHash(difficulty uint64)
+	calculateHash(difficulty uint8)
 }
 
 type RewardTransaction struct {
@@ -47,16 +47,16 @@ func (t RewardTransaction) GetTransactionId() string {
 	return t.TransactionId
 }
 
-func (t *RewardTransaction) calculateHash(difficulty uint64) {
+func (t *RewardTransaction) calculateHash(difficulty uint8) {
 	t.TransactionId = utils.ApplySha256(t.Coinbase + fmt.Sprintf("%v", t.Output) + fmt.Sprintf("%d", difficulty) + fmt.Sprintf("%d", t.Timestamp))
 	t.Output.ParentTransactionId = t.TransactionId
 }
 
-func (t *RewardTransaction) calculateCoinbase(difficulty uint64, coinbase string) {
+func (t *RewardTransaction) calculateCoinbase(difficulty uint8, coinbase string) {
 	t.Coinbase = utils.ApplySha256(fmt.Sprintf("%d", difficulty) + fmt.Sprintf("%d", t.Timestamp) + coinbase)
 }
 
-func CreateRewardTransaction(reciepient string, rewardValue float64, difficulty uint64, coinbase string) RewardTransaction {
+func CreateRewardTransaction(reciepient string, rewardValue float64, difficulty uint8, coinbase string) RewardTransaction {
 	transactionOutput := TransactionOutput{"", reciepient, rewardValue, ""}
 	transactionOutput.calculateHash()
 	t := time.Now()
@@ -70,7 +70,7 @@ func (t SimpleTransaction) GetTransactionId() string {
 	return t.TransactionId
 }
 
-func (t *SimpleTransaction) calculateHash(difficulty uint64) {
+func (t *SimpleTransaction) calculateHash(difficulty uint8) {
 	t.TransactionId = utils.ApplySha256(t.Sender + fmt.Sprintf("%v", t.Inputs) + fmt.Sprintf("%v", t.Outputs) + fmt.Sprintf("%d", difficulty) + fmt.Sprintf("%d", t.Timestamp))
 }
 

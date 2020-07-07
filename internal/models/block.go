@@ -8,17 +8,17 @@ import (
 
 type Block struct {
 	Height     uint64        `json:"height"`
-	Timestamp  int64         `json:"timestamp"`
+	Timestamp  uint64        `json:"timestamp"`
 	Data       []Transaction `json:"data"`
 	Hash       string        `json:"hash"`
 	PrevHash   string        `json:"prev_hash"`
 	MerkleRoot string        `json:"merkle_root"`
-	Difficulty uint64        `json:"difficulty"`
+	Difficulty uint8         `json:"difficulty"`
 	Miner      string        `json:"miner"`
 	Nonce      uint64        `json:"nonce"`
 }
 
-func (b Block) GenerateNextBlock(miner string, difficulty uint64, transactions []Transaction) Block {
+func (b Block) GenerateNextBlock(miner string, difficulty uint8, transactions []Transaction) Block {
 	var newBlock Block
 
 	t := time.Now()
@@ -30,7 +30,7 @@ func (b Block) GenerateNextBlock(miner string, difficulty uint64, transactions [
 		newBlock.Height = b.Height + 1
 		newBlock.PrevHash = b.Hash
 	}
-	newBlock.Timestamp = t.Unix()
+	newBlock.Timestamp = uint64(t.Unix())
 	newBlock.Difficulty = difficulty
 	newBlock.Data = transactions
 	newBlock.Miner = miner
@@ -41,7 +41,7 @@ func (b Block) GenerateNextBlock(miner string, difficulty uint64, transactions [
 	return newBlock
 }
 
-func (b Block) IsValid(oldBlock *Block, difficulty uint64) bool {
+func (b Block) IsValid(oldBlock *Block, difficulty uint8) bool {
 	if b.Height != 0 && oldBlock.Height+1 != b.Height {
 		return false
 	}
@@ -58,7 +58,7 @@ func (b Block) IsValid(oldBlock *Block, difficulty uint64) bool {
 	return true
 }
 
-func (b *Block) Mine(difficulty uint64) {
+func (b *Block) Mine(difficulty uint8) {
 	difficultyString := ""
 	for len(difficultyString) < int(difficulty) {
 		difficultyString += "0"

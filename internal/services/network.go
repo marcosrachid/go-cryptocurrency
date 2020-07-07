@@ -10,7 +10,7 @@ func GetCirculatingSupply() (float64, error) {
 	return float64(block.Height) * global.REWARD, err
 }
 
-func GetDifficulty() (uint64, error) {
+func GetDifficulty() (uint8, error) {
 	block, err := block.GetLast()
 	return block.Difficulty, err
 }

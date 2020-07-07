@@ -8,12 +8,11 @@ import (
 	"go-cryptocurrency/internal/global"
 	"go-cryptocurrency/internal/models"
 	"go-cryptocurrency/internal/services"
-	"time"
+	"go-cryptocurrency/pkg/utils"
 )
 
 func MineBlocks() {
 	for {
-		time.Sleep(5 * time.Second)
 		if global.CURRENT_BLOCK.Height != global.NETWORK_HEIGHT {
 			fmt.Println("Node unsinchronized")
 			continue
@@ -36,8 +35,8 @@ func MineBlocks() {
 			fmt.Println(err)
 			continue
 		}
-		var difficulty uint64
-		if global.CURRENT_BLOCK.Height%global.DIFFICULTY_ADJUSTMENT_BLOCK == 0 {
+		var difficulty uint8
+		if global.CURRENT_BLOCK.Height != 0 && global.CURRENT_BLOCK.Height%global.DIFFICULTY_ADJUSTMENT_BLOCK == 0 {
 			difficulty = adjustDifficulty()
 		} else {
 			difficulty = global.CURRENT_BLOCK.Difficulty
@@ -50,12 +49,6 @@ func MineBlocks() {
 				break
 			}
 		}
-		newBlock := global.CURRENT_BLOCK.GenerateNextBlock(publicKey, difficulty, transactions)
-		newBlock.Mine(difficulty)
-		if !newBlock.IsValid(global.CURRENT_BLOCK, difficulty) {
-			fmt.Println("Invalid block")
-			continue
-		}
 		circulatingSupply := float64(global.CURRENT_BLOCK.Height) * global.REWARD
 		if circulatingSupply != global.SUPPLY_LIMIT {
 			var reward models.RewardTransaction
@@ -64,7 +57,17 @@ func MineBlocks() {
 			} else {
 				reward = models.CreateRewardTransaction(publicKey, global.REWARD, difficulty, global.COINBASE)
 			}
-			newBlock.Data = append(newBlock.Data, &reward)
+			transactions = append(transactions, &reward)
+		}
+		if len(transactions) == 0 {
+			fmt.Println("No transaction to mine")
+			continue
+		}
+		newBlock := global.CURRENT_BLOCK.GenerateNextBlock(publicKey, difficulty, transactions)
+		newBlock.Mine(difficulty)
+		if !newBlock.IsValid(global.CURRENT_BLOCK, difficulty) {
+			fmt.Println("Invalid block")
+			continue
 		}
 		block.Put(newBlock)
 		global.CURRENT_BLOCK = &newBlock
@@ -73,7 +76,28 @@ func MineBlocks() {
 	}
 }
 
-func adjustDifficulty() uint64 {
+func adjustDifficulty() uint8 {
 	fmt.Println("Adjusting difficulty...")
-	return 0
+	currentBlock := global.CURRENT_BLOCK
+	var timestamps [global.DIFFICULTY_ADJUSTMENT_BLOCK]uint64
+	for i := int(global.DIFFICULTY_ADJUSTMENT_BLOCK - 1); i >= 0; i-- {
+		timestamps[i] = currentBlock.Timestamp
+		currentBlock, _ = block.GetByHeight(currentBlock.Height - 1)
+	}
+	var differences [global.DIFFICULTY_ADJUSTMENT_BLOCK - 1]uint64
+	for k, t := range timestamps {
+		if k > 0 {
+			differences[k-1] = t - timestamps[k-1]
+		}
+	}
+	average := utils.AverageUint64(differences[:])
+	top := float64(global.MINING_TIME_RATE) * (1.0 + global.MINING_TIME_RATE_ERROR)
+	bottom := float64(global.MINING_TIME_RATE) * (1.0 - global.MINING_TIME_RATE_ERROR)
+	if average > top && global.CURRENT_BLOCK.Difficulty > 0 {
+		return global.CURRENT_BLOCK.Difficulty - 1
+	}
+	if average < bottom && global.CURRENT_BLOCK.Difficulty < global.MAX_DIFFICULTY {
+		return global.CURRENT_BLOCK.Difficulty + 1
+	}
+	return global.CURRENT_BLOCK.Difficulty
 }
