@@ -10,6 +10,7 @@ import (
 	"go-cryptocurrency/internal/models"
 	"go-cryptocurrency/internal/services"
 	"go-cryptocurrency/pkg/utils"
+	"os"
 )
 
 func MineBlocks() {
@@ -81,7 +82,7 @@ func MineBlocks() {
 			continue
 		}
 		newBlock := global.CURRENT_BLOCK.GenerateNextBlock(
-			global.IP,
+			fmt.Sprintf("%s:%s", global.IP, os.Getenv("NETWORK_PORT")),
 			difficulty,
 			transactions,
 		)

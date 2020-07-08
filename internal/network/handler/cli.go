@@ -38,7 +38,6 @@ Command usage:
 	network [arguments]
 The arguments are:
 	-s, --supply-limit		show supply limit
-	-m, --minimum-transaction	show minimum transaction value accepted above zero
 	-c, --circulating-supply	show current circulating supply
 	-d, --difficulty		show current difficulty
 	-r, --reward			show current reward value
@@ -48,14 +47,13 @@ The arguments are:
 `
 	TRANSACTION_HELP = `
 Command usage:
-	transaction [reciepient public-key] [decimal value]
-	transaction [reciepient public-key] [decimal value] [string data]
-	transaction [reciepient public-key] [decimal value] [string data]
+	transaction [reciepient public-key] [decimal value] ?[arguments]
+The arguments are:
+	-p, --priority [1|2|3] 		set the priority of transaction(being 1 the highest priority)
+	-d, --data (.)+			set generic data to be placed on transaction
 Examples:
 	transaction "MFkwEwYHKoZIzj0CAQYIKoZIzj0DAQcDQgAEP2egppaZKvyJ2r6+B2vEBBwSQP0B
 yiVVhTpH5PYh6vGiq8QGcqJOvtW6vq3fUGEEJdyXXi77EMgFP7LrdEIhYw==" 1
-	transaction "MFkwEwYHKoZIzj0CAQYIKoZIzj0DAQcDQgAEP2egppaZKvyJ2r6+B2vEBBwSQP0B
-yiVVhTpH5PYh6vGiq8QGcqJOvtW6vq3fUGEEJdyXXi77EMgFP7LrdEIhYw==" 1 "any string"
 `
 	KEY_HELP = `
 Command usage:
@@ -110,17 +108,15 @@ func networkCommands(arguments []string, writer *bufio.Writer) {
 	case len(arguments) <= 0 || strings.Compare(arguments[0], "-h") == 0 || strings.Compare(arguments[0], "--help") == 0:
 		answer(NETWORK_HELP, writer)
 	case strings.Compare(arguments[0], "-s") == 0 || strings.Compare(arguments[0], "--supply-limit") == 0:
-		answer(fmt.Sprintf("%.16f", global.SUPPLY_LIMIT), writer)
-	case strings.Compare(arguments[0], "-m") == 0 || strings.Compare(arguments[0], "--minimum-transaction") == 0:
-		answer(fmt.Sprintf("%.16f", global.MINIMUM_TRANSACTION), writer)
+		answer(fmt.Sprintf(global.DECIMAL_STRING, global.SUPPLY_LIMIT), writer)
 	case strings.Compare(arguments[0], "-c") == 0 || strings.Compare(arguments[0], "--circulating-supply") == 0:
-		answer(fmt.Sprintf("%.16f", services.GetCirculatingSupply()), writer)
+		answer(fmt.Sprintf(global.DECIMAL_STRING, services.GetCirculatingSupply()), writer)
 	case strings.Compare(arguments[0], "-d") == 0 || strings.Compare(arguments[0], "--difficulty") == 0:
 		answer(fmt.Sprintf("%d", services.GetDifficulty()), writer)
 	case strings.Compare(arguments[0], "-r") == 0 || strings.Compare(arguments[0], "--reward") == 0:
-		answer(fmt.Sprintf("%.16f", global.REWARD), writer)
+		answer(fmt.Sprintf(global.DECIMAL_STRING, global.REWARD), writer)
 	case strings.Compare(arguments[0], "-f") == 0 || strings.Compare(arguments[0], "--fees") == 0:
-		answer(fmt.Sprintf("%.16f%%", global.FEES*100), writer)
+		answer(fmt.Sprintf("P1: %.2f%%, P2: %.2f%%, P3: %.2f%%", global.P1_FEES*100, global.P2_FEES*100, global.P3_FEES*100), writer)
 	case strings.Compare(arguments[0], "-b") == 0 || strings.Compare(arguments[0], "--block-size") == 0:
 		answer(fmt.Sprintf("%d bytes", global.BLOCK_SIZE), writer)
 	default:
@@ -161,7 +157,7 @@ func keyCommands(arguments []string, writer *bufio.Writer) {
 		answerWithError(response, err, writer)
 	case strings.Compare(arguments[0], "-b") == 0 || strings.Compare(arguments[0], "--balance") == 0:
 		response, err := services.Balance(arguments[1:])
-		answerWithError(fmt.Sprintf("%.16f", response), err, writer)
+		answerWithError(fmt.Sprintf(global.DECIMAL_STRING, response), err, writer)
 	default:
 		answer(fmt.Sprintf("Command \"wallet %s\" not found", strings.Join(arguments, " ")), writer)
 	}
