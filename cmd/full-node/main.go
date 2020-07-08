@@ -32,7 +32,10 @@ func main() {
 	}
 	defer db.Stop()
 
-	global.Load()
+	err = global.Load()
+	if err != nil {
+		panic(err)
+	}
 
 	go network.SocketServer(os.Getenv("CLI_PORT"), handler.CliHandler)
 	network.SocketServer(os.Getenv("NETWORK_PORT"), handler.DispatcherHandler)

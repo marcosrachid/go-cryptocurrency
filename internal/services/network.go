@@ -1,16 +1,13 @@
 package services
 
 import (
-	"go-cryptocurrency/internal/db/block"
 	"go-cryptocurrency/internal/global"
 )
 
-func GetCirculatingSupply() (float64, error) {
-	block, err := block.GetLast()
-	return float64(block.Height) * global.REWARD, err
+func GetCirculatingSupply() float64 {
+	return float64(global.CURRENT_BLOCK.Height) * global.REWARD
 }
 
-func GetDifficulty() (uint8, error) {
-	block, err := block.GetLast()
-	return block.Difficulty, err
+func GetDifficulty() uint8 {
+	return global.CURRENT_BLOCK.Difficulty
 }

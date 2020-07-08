@@ -11,33 +11,34 @@ import (
 type BlockData []Transaction
 
 type Block struct {
-	Height     uint64    `json:"height"`
-	Timestamp  int64     `json:"timestamp"`
-	Data       BlockData `json:"data"`
-	Hash       string    `json:"hash"`
-	PrevHash   string    `json:"prev_hash"`
-	MerkleRoot string    `json:"merkle_root"`
-	Difficulty uint8     `json:"difficulty"`
-	Miner      string    `json:"miner"`
-	Nonce      uint64    `json:"nonce"`
+	Height            uint64    `json:"height"`
+	ReceivedTimestamp int64     `json:"received_timestamp"`
+	Timestamp         int64     `json:"timestamp"`
+	Data              BlockData `json:"data"`
+	Hash              string    `json:"hash"`
+	PrevHash          string    `json:"prev_hash"`
+	MerkleRoot        string    `json:"merkle_root"`
+	Difficulty        uint8     `json:"difficulty"`
+	RelayedBy         string    `json:"relayed_by"`
+	Nonce             uint64    `json:"nonce"`
 }
 
-func (b Block) GenerateNextBlock(miner string, difficulty uint8, transactions []Transaction) Block {
+func (b Block) GenerateNextBlock(relayedBy string, difficulty uint8, transactions []Transaction) Block {
 	var newBlock Block
 
 	t := time.Now()
 
-	if b.Timestamp == 0 {
+	if b.ReceivedTimestamp == 0 {
 		newBlock.Height = 0
 		newBlock.PrevHash = "0"
 	} else {
 		newBlock.Height = b.Height + 1
 		newBlock.PrevHash = b.Hash
 	}
-	newBlock.Timestamp = t.UnixNano()
+	newBlock.ReceivedTimestamp = t.UnixNano()
 	newBlock.Difficulty = difficulty
 	newBlock.Data = transactions
-	newBlock.Miner = miner
+	newBlock.RelayedBy = relayedBy
 	newBlock.Nonce = 0
 	newBlock.calculateMerkleRoot()
 	newBlock.calculateHash()
@@ -69,6 +70,7 @@ func (b *Block) Mine(difficulty uint8) {
 	}
 	for runes := []rune(b.Hash); string(runes[0:difficulty]) != difficultyString; runes = []rune(b.Hash) {
 		b.Nonce++
+		b.Timestamp = time.Now().UnixNano()
 		b.calculateHash()
 	}
 }

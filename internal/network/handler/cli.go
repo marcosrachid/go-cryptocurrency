@@ -114,11 +114,9 @@ func networkCommands(arguments []string, writer *bufio.Writer) {
 	case strings.Compare(arguments[0], "-m") == 0 || strings.Compare(arguments[0], "--minimum-transaction") == 0:
 		answer(fmt.Sprintf("%.16f", global.MINIMUM_TRANSACTION), writer)
 	case strings.Compare(arguments[0], "-c") == 0 || strings.Compare(arguments[0], "--circulating-supply") == 0:
-		response, err := services.GetCirculatingSupply()
-		answerWithError(fmt.Sprintf("%.16f", response), err, writer)
+		answer(fmt.Sprintf("%.16f", services.GetCirculatingSupply()), writer)
 	case strings.Compare(arguments[0], "-d") == 0 || strings.Compare(arguments[0], "--difficulty") == 0:
-		response, err := services.GetDifficulty()
-		answerWithError(fmt.Sprintf("%d", response), err, writer)
+		answer(fmt.Sprintf("%d", services.GetDifficulty()), writer)
 	case strings.Compare(arguments[0], "-r") == 0 || strings.Compare(arguments[0], "--reward") == 0:
 		answer(fmt.Sprintf("%.16f", global.REWARD), writer)
 	case strings.Compare(arguments[0], "-f") == 0 || strings.Compare(arguments[0], "--fees") == 0:

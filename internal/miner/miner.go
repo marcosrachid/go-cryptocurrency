@@ -47,13 +47,11 @@ func MineBlocks() {
 		} else {
 			difficulty = global.CURRENT_BLOCK.Difficulty
 		}
-		var sequence uint64
 		transactions := make([]models.Transaction, 0)
 		for _, t := range transactionPool {
-			t.CalculateHash(difficulty, sequence)
+			t.CalculateHash(difficulty)
 			transactions = append(transactions, t)
 			transactionsBytes, _ := json.Marshal(transactions)
-			sequence++
 			if len(transactionsBytes) > int(global.BLOCK_SIZE) {
 				break
 			}
@@ -67,7 +65,6 @@ func MineBlocks() {
 					global.SUPPLY_LIMIT-circulatingSupply,
 					difficulty,
 					global.COINBASE,
-					sequence,
 				)
 			} else {
 				reward = models.CreateRewardTransaction(
@@ -75,7 +72,6 @@ func MineBlocks() {
 					global.REWARD,
 					difficulty,
 					global.COINBASE,
-					sequence,
 				)
 			}
 			transactions = append(transactions, &reward)
@@ -85,7 +81,7 @@ func MineBlocks() {
 			continue
 		}
 		newBlock := global.CURRENT_BLOCK.GenerateNextBlock(
-			publicKey,
+			global.IP,
 			difficulty,
 			transactions,
 		)

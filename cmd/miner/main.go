@@ -34,8 +34,12 @@ func main() {
 	}
 	defer db.Stop()
 
-	global.Load()
+	err = global.Load()
+	if err != nil {
+		panic(err)
+	}
 
+	// CLI TO BE REMOVED
 	go network.SocketServer(os.Getenv("CLI_PORT"), handler.CliHandler)
 	go network.SocketServer(os.Getenv("NETWORK_PORT"), handler.DispatcherHandler)
 	// Wait a minute to communicate with the network
