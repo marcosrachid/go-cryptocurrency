@@ -1,7 +1,7 @@
 package utils
 
-func AverageUint64(xs []uint64) float64 {
-	var total uint64 = 0
+func AverageInt64(xs []int64) float64 {
+	var total int64 = 0
 	for _, v := range xs {
 		total += v
 	}

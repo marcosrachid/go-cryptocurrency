@@ -34,15 +34,16 @@ func Put(key string, utxo []models.TransactionOutput) error {
 	return db.Instance.UTXOState.Put([]byte(key), compressed, nil)
 }
 
-func Add(key string, utxo []models.TransactionOutput) {
-	list, err := Get(key)
-	if err != nil {
-		l := make([]models.TransactionOutput, 0)
-		list = &l
+func Add(utxo []models.TransactionOutput) {
+	m := make(map[string][]models.TransactionOutput)
+	for i := 0; i < len(utxo); i++ {
+		if val, ok := m[utxo[i].Reciepient]; ok {
+			m[utxo[i].Reciepient] = append(val, utxo[i])
+		} else {
+			m[utxo[i].Reciepient] = []models.TransactionOutput{utxo[i]}
+		}
 	}
-	for _, u := range utxo {
-		*list = append(*list, u)
+	for k, v := range m {
+		Put(k, v)
 	}
-	// log.Println(list)
-	Put(key, *list)
 }

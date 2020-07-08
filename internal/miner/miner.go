@@ -62,9 +62,21 @@ func MineBlocks() {
 		if circulatingSupply != global.SUPPLY_LIMIT {
 			var reward models.RewardTransaction
 			if global.REWARD > global.SUPPLY_LIMIT-circulatingSupply {
-				reward = models.CreateRewardTransaction(publicKey, global.SUPPLY_LIMIT-circulatingSupply, difficulty, global.COINBASE, sequence)
+				reward = models.CreateRewardTransaction(
+					publicKey,
+					global.SUPPLY_LIMIT-circulatingSupply,
+					difficulty,
+					global.COINBASE,
+					sequence,
+				)
 			} else {
-				reward = models.CreateRewardTransaction(publicKey, global.REWARD, difficulty, global.COINBASE, sequence)
+				reward = models.CreateRewardTransaction(
+					publicKey,
+					global.REWARD,
+					difficulty,
+					global.COINBASE,
+					sequence,
+				)
 			}
 			transactions = append(transactions, &reward)
 		}
@@ -72,7 +84,11 @@ func MineBlocks() {
 			fmt.Println("No transaction to mine")
 			continue
 		}
-		newBlock := global.CURRENT_BLOCK.GenerateNextBlock(publicKey, difficulty, transactions)
+		newBlock := global.CURRENT_BLOCK.GenerateNextBlock(
+			publicKey,
+			difficulty,
+			transactions,
+		)
 		newBlock.Mine(difficulty)
 		if !newBlock.IsValid(global.CURRENT_BLOCK, difficulty) {
 			fmt.Println("Invalid block")
@@ -87,7 +103,7 @@ func MineBlocks() {
 		for _, t := range newBlock.Data {
 			u = append(u, t.GetOutputs()...)
 		}
-		utxo.Add(publicKey, u)
+		utxo.Add(u)
 		global.CURRENT_BLOCK = &newBlock
 		global.NETWORK_HEIGHT = newBlock.Height
 		fmt.Println("Block mined: ", newBlock.Hash)
@@ -97,18 +113,18 @@ func MineBlocks() {
 func adjustDifficulty() uint8 {
 	fmt.Println("Adjusting difficulty...")
 	currentBlock := global.CURRENT_BLOCK
-	var timestamps [global.DIFFICULTY_ADJUSTMENT_BLOCK]uint64
+	var timestamps [global.DIFFICULTY_ADJUSTMENT_BLOCK]int64
 	for i := int(global.DIFFICULTY_ADJUSTMENT_BLOCK - 1); i >= 0; i-- {
 		timestamps[i] = currentBlock.Timestamp
 		currentBlock, _ = block.GetByHeight(currentBlock.Height - 1)
 	}
-	var differences [global.DIFFICULTY_ADJUSTMENT_BLOCK - 1]uint64
+	var differences [global.DIFFICULTY_ADJUSTMENT_BLOCK - 1]int64
 	for k, t := range timestamps {
 		if k > 0 {
 			differences[k-1] = t - timestamps[k-1]
 		}
 	}
-	average := utils.AverageUint64(differences[:])
+	average := utils.AverageInt64(differences[:])
 	top := float64(global.MINING_TIME_RATE) * (1.0 + global.MINING_TIME_RATE_ERROR)
 	bottom := float64(global.MINING_TIME_RATE) * (1.0 - global.MINING_TIME_RATE_ERROR)
 	if average > top && global.CURRENT_BLOCK.Difficulty > 0 {

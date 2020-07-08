@@ -12,7 +12,7 @@ type BlockData []Transaction
 
 type Block struct {
 	Height     uint64    `json:"height"`
-	Timestamp  uint64    `json:"timestamp"`
+	Timestamp  int64     `json:"timestamp"`
 	Data       BlockData `json:"data"`
 	Hash       string    `json:"hash"`
 	PrevHash   string    `json:"prev_hash"`
@@ -34,7 +34,7 @@ func (b Block) GenerateNextBlock(miner string, difficulty uint8, transactions []
 		newBlock.Height = b.Height + 1
 		newBlock.PrevHash = b.Hash
 	}
-	newBlock.Timestamp = uint64(t.Unix())
+	newBlock.Timestamp = t.UnixNano()
 	newBlock.Difficulty = difficulty
 	newBlock.Data = transactions
 	newBlock.Miner = miner

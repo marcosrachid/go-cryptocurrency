@@ -33,8 +33,8 @@ type SimpleTransaction struct {
 }
 
 type TransactionInput struct {
-	TransactionOutputId       string            `json:"transaction_output_id"`
-	UnspecntTransactionOutput TransactionOutput `json:"unspent_transaction_output"`
+	TransactionOutputId      string            `json:"transaction_output_id"`
+	UnspentTransactionOutput TransactionOutput `json:"unspent_transaction_output"`
 }
 
 type TransactionOutput struct {
@@ -62,10 +62,10 @@ func (t *RewardTransaction) calculateCoinbase(difficulty uint8, coinbase string,
 }
 
 func CreateRewardTransaction(reciepient string, rewardValue float64, difficulty uint8, coinbase string, sequence uint64) RewardTransaction {
-	transactionOutput := TransactionOutput{"", reciepient, rewardValue, ""}
-	transactionOutput.calculateHash(sequence)
 	t := time.Now()
-	transaction := RewardTransaction{"", rewardValue, t.Unix(), "", transactionOutput}
+	transactionOutput := TransactionOutput{"", reciepient, rewardValue, ""}
+	transactionOutput.calculateHash(sequence, t.UnixNano())
+	transaction := RewardTransaction{"", rewardValue, t.UnixNano(), "", transactionOutput}
 	transaction.calculateCoinbase(difficulty, coinbase, sequence)
 	transaction.CalculateHash(difficulty, sequence)
 	return transaction
@@ -83,6 +83,6 @@ func (t *SimpleTransaction) CalculateHash(difficulty uint8, sequence uint64) {
 	t.TransactionId = utils.ApplySha256(t.Sender + fmt.Sprintf("%v", t.Inputs) + fmt.Sprintf("%v", t.Outputs) + fmt.Sprintf("%d", difficulty) + fmt.Sprintf("%d", t.Timestamp) + fmt.Sprintf("%d", sequence))
 }
 
-func (to *TransactionOutput) calculateHash(sequence uint64) {
-	to.Id = utils.ApplySha256(to.Reciepient + fmt.Sprintf("%.16f", to.Value) + fmt.Sprintf("%d", sequence))
+func (to *TransactionOutput) calculateHash(sequence uint64, timestamp int64) {
+	to.Id = utils.ApplySha256(to.Reciepient + fmt.Sprintf("%.16f", to.Value) + fmt.Sprintf("%d", sequence) + fmt.Sprintf("%d", timestamp))
 }
