@@ -17,9 +17,13 @@ func GetByHeight(height uint64) (*models.Block, error) {
 	if err != nil {
 		return nil, err
 	}
-	var block models.Block
-	json.Unmarshal(response, &block)
-	return &block, nil
+	decompressed, err := utils.Decompress(response)
+	if err != nil {
+		return nil, err
+	}
+	block := &models.Block{}
+	json.Unmarshal(decompressed, block)
+	return block, nil
 }
 
 func GetByHash(hash string) (*models.Block, error) {
@@ -31,9 +35,13 @@ func GetByHash(hash string) (*models.Block, error) {
 	if err != nil {
 		return nil, err
 	}
-	var block models.Block
-	json.Unmarshal(response, &block)
-	return &block, nil
+	decompressed, err := utils.Decompress(response)
+	if err != nil {
+		return nil, err
+	}
+	block := &models.Block{}
+	json.Unmarshal(decompressed, block)
+	return block, nil
 }
 
 func GetLast() (*models.Block, error) {
@@ -45,9 +53,13 @@ func GetLast() (*models.Block, error) {
 	if err != nil {
 		return nil, err
 	}
-	var block models.Block
-	json.Unmarshal(response, &block)
-	return &block, nil
+	decompressed, err := utils.Decompress(response)
+	if err != nil {
+		return nil, err
+	}
+	block := &models.Block{}
+	json.Unmarshal(decompressed, block)
+	return block, nil
 }
 
 func DeleteByHeight(height uint64) error {
@@ -112,5 +124,6 @@ func Put(block models.Block) error {
 	if err != nil {
 		return err
 	}
-	return db.Instance.Block.Put([]byte(sha256), []byte(data), nil)
+	compressed := utils.Compress(data)
+	return db.Instance.Block.Put([]byte(sha256), compressed, nil)
 }

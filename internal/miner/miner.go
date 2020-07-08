@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"go-cryptocurrency/internal/db/block"
 	"go-cryptocurrency/internal/db/mempool"
+	"go-cryptocurrency/internal/db/utxo"
 	"go-cryptocurrency/internal/global"
 	"go-cryptocurrency/internal/models"
 	"go-cryptocurrency/internal/services"
@@ -20,8 +21,13 @@ func MineBlocks() {
 		transactionPool := make([]models.Transaction, 0)
 		iter := mempool.Iterator()
 		for iter.Next() {
+			decompressed, err := utils.Decompress(iter.Value())
+			if err != nil {
+				fmt.Println("Mempool corrupted")
+				continue
+			}
 			transaction := &models.SimpleTransaction{}
-			json.Unmarshal(iter.Value(), transaction)
+			json.Unmarshal(decompressed, transaction)
 			transactionPool = append(transactionPool, transaction)
 		}
 		iter.Release()
@@ -41,10 +47,13 @@ func MineBlocks() {
 		} else {
 			difficulty = global.CURRENT_BLOCK.Difficulty
 		}
+		var sequence uint64
 		transactions := make([]models.Transaction, 0)
 		for _, t := range transactionPool {
+			t.CalculateHash(difficulty, sequence)
 			transactions = append(transactions, t)
 			transactionsBytes, _ := json.Marshal(transactions)
+			sequence++
 			if len(transactionsBytes) > int(global.BLOCK_SIZE) {
 				break
 			}
@@ -53,9 +62,9 @@ func MineBlocks() {
 		if circulatingSupply != global.SUPPLY_LIMIT {
 			var reward models.RewardTransaction
 			if global.REWARD > global.SUPPLY_LIMIT-circulatingSupply {
-				reward = models.CreateRewardTransaction(publicKey, global.SUPPLY_LIMIT-circulatingSupply, difficulty, global.COINBASE)
+				reward = models.CreateRewardTransaction(publicKey, global.SUPPLY_LIMIT-circulatingSupply, difficulty, global.COINBASE, sequence)
 			} else {
-				reward = models.CreateRewardTransaction(publicKey, global.REWARD, difficulty, global.COINBASE)
+				reward = models.CreateRewardTransaction(publicKey, global.REWARD, difficulty, global.COINBASE, sequence)
 			}
 			transactions = append(transactions, &reward)
 		}
@@ -69,7 +78,16 @@ func MineBlocks() {
 			fmt.Println("Invalid block")
 			continue
 		}
-		block.Put(newBlock)
+		err = block.Put(newBlock)
+		if err != nil {
+			fmt.Println(err)
+			continue
+		}
+		var u []models.TransactionOutput
+		for _, t := range newBlock.Data {
+			u = append(u, t.GetOutputs()...)
+		}
+		utxo.Add(publicKey, u)
 		global.CURRENT_BLOCK = &newBlock
 		global.NETWORK_HEIGHT = newBlock.Height
 		fmt.Println("Block mined: ", newBlock.Hash)

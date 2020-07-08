@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"go-cryptocurrency/internal/db"
 	"go-cryptocurrency/internal/models"
+	"go-cryptocurrency/pkg/utils"
 
 	"github.com/syndtr/goleveldb/leveldb/iterator"
 )
@@ -13,8 +14,12 @@ func Get(key string) (*models.SimpleTransaction, error) {
 	if err != nil {
 		return nil, err
 	}
+	decompressed, err := utils.Decompress(response)
+	if err != nil {
+		return nil, err
+	}
 	transaction := &models.SimpleTransaction{}
-	json.Unmarshal(response, transaction)
+	json.Unmarshal(decompressed, transaction)
 	return transaction, nil
 }
 
@@ -27,7 +32,8 @@ func Put(key string, transaction models.SimpleTransaction) error {
 	if err != nil {
 		return err
 	}
-	return db.Instance.Mempool.Put([]byte(key), []byte(data), nil)
+	compressed := utils.Compress(data)
+	return db.Instance.Mempool.Put([]byte(key), compressed, nil)
 }
 
 func Iterator() iterator.Iterator {
