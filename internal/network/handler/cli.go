@@ -11,7 +11,7 @@ import (
 )
 
 const (
-	HELP = `
+	help = `
 Command usage:
 	<command> [arguments]
 The commands are:
@@ -21,7 +21,7 @@ The commands are:
 	wallet			show key arguments
 	-h, --help		shows help
 `
-	BLOCK_HELP = `
+	blockHelp = `
 Command usage:
 	block [arguments]
 	block
@@ -33,7 +33,7 @@ The arguments are:
 	-x, --hash empty or [0-9]+			show current hash or from specified height
 	-h, --help					shows help
 `
-	NETWORK_HELP = `
+	networkHelp = `
 Command usage:
 	network [arguments]
 The arguments are:
@@ -45,7 +45,7 @@ The arguments are:
 	-b, --block-size		show block maximum size
 	-h, --help			shows help
 `
-	TRANSACTION_HELP = `
+	transactionHelp = `
 Command usage:
 	transaction [reciepient public-key] [decimal value] ?[arguments]
 The arguments are:
@@ -55,14 +55,14 @@ Examples:
 	transaction "MFkwEwYHKoZIzj0CAQYIKoZIzj0DAQcDQgAEP2egppaZKvyJ2r6+B2vEBBwSQP0B
 yiVVhTpH5PYh6vGiq8QGcqJOvtW6vq3fUGEEJdyXXi77EMgFP7LrdEIhYw==" 1
 `
-	KEY_HELP = `
+	keyHelp = `
 Command usage:
 	wallet [arguments]
 The arguments are:
 	-p, --public-key				show current public-key
 	-k, --private-key				show current private-key
 	-n, --new					generate new wallet
-	-i, --import [private-key]			import a wallet
+	-i, --import [private-key path]			import a wallet
 	-b, --balance empty or [public-key] 		show balance from current wallet or specified public-key
 	-h, --help					shows help
 `
@@ -81,7 +81,7 @@ func CliHandler(data string, writer *bufio.Writer) {
 	case strings.Compare(request.Command, "wallet") == 0:
 		keyCommands(request.Arguments, writer)
 	case len(request.Command) == 0 || strings.Compare(request.Command, "-h") == 0 || strings.Compare(request.Command, "--help") == 0:
-		answer(HELP, writer)
+		answer(help, writer)
 	default:
 		answer(fmt.Sprintf("Command \"%s\" not found\n", request.Command), writer)
 	}
@@ -90,7 +90,7 @@ func CliHandler(data string, writer *bufio.Writer) {
 func blockCommands(arguments []string, writer *bufio.Writer) {
 	switch {
 	case len(arguments) > 0 && (strings.Compare(arguments[0], "-h") == 0 || strings.Compare(arguments[0], "--help") == 0):
-		answer(BLOCK_HELP, writer)
+		answer(blockHelp, writer)
 	case len(arguments) > 0 && (strings.Compare(arguments[0], "-e") == 0 || strings.Compare(arguments[0], "--height") == 0):
 		response, err := services.GetHeight(arguments[1:])
 		answerWithError(fmt.Sprintf("%d", response), err, writer)
@@ -106,7 +106,7 @@ func blockCommands(arguments []string, writer *bufio.Writer) {
 func networkCommands(arguments []string, writer *bufio.Writer) {
 	switch {
 	case len(arguments) <= 0 || strings.Compare(arguments[0], "-h") == 0 || strings.Compare(arguments[0], "--help") == 0:
-		answer(NETWORK_HELP, writer)
+		answer(networkHelp, writer)
 	case strings.Compare(arguments[0], "-s") == 0 || strings.Compare(arguments[0], "--supply-limit") == 0:
 		answer(fmt.Sprintf(global.DECIMAL_STRING, global.SUPPLY_LIMIT), writer)
 	case strings.Compare(arguments[0], "-c") == 0 || strings.Compare(arguments[0], "--circulating-supply") == 0:
@@ -127,7 +127,7 @@ func networkCommands(arguments []string, writer *bufio.Writer) {
 func transactionCommands(arguments []string, writer *bufio.Writer) {
 	switch {
 	case len(arguments) <= 0 || strings.Compare(arguments[0], "-h") == 0 || strings.Compare(arguments[0], "--help") == 0:
-		answer(TRANSACTION_HELP, writer)
+		answer(transactionHelp, writer)
 	default:
 		response, err := services.SendTransaction(arguments)
 		if err != nil {
@@ -142,7 +142,7 @@ func transactionCommands(arguments []string, writer *bufio.Writer) {
 func keyCommands(arguments []string, writer *bufio.Writer) {
 	switch {
 	case len(arguments) <= 0 || strings.Compare(arguments[0], "-h") == 0 || strings.Compare(arguments[0], "--help") == 0:
-		answer(KEY_HELP, writer)
+		answer(keyHelp, writer)
 	case strings.Compare(arguments[0], "-p") == 0 || strings.Compare(arguments[0], "--public-key") == 0:
 		response, err := services.GetPublicKey()
 		answerWithError(response, err, writer)

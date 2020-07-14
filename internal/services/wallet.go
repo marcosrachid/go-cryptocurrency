@@ -1,6 +1,7 @@
 package services
 
 import (
+	"fmt"
 	"go-cryptocurrency/pkg/utils"
 	"log"
 )
@@ -75,7 +76,9 @@ func WalletGenerate() (string, error) {
 }
 
 func WalletImport(arguments []string) (string, error) {
-	return "", nil
+	if len(arguments) <= 0 {
+		return "", fmt.Errorf("Private key is mandatory")
+	}
 }
 
 func Balance(arguments []string) (float64, error) {

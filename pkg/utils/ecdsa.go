@@ -15,17 +15,17 @@ import (
 	"path/filepath"
 )
 
-type Signature struct {
+type signature struct {
 	R *big.Int `json:"r"`
 	S *big.Int `json:"s"`
 }
 
 const (
-	PATH             = "key"
-	PRIVATE_PEM_NAME = "private.pem"
-	PRIVATE_PEM_TYPE = "PRIVATE KEY"
-	PUBLIC_PEM_NAME  = "public.pem"
-	PUBLIC_PEM_TYPE  = "PUBLIC KEY"
+	path           = "key"
+	privatePemName = "private.pem"
+	privatePemType = "PRIVATE KEY"
+	publicPemName  = "public.pem"
+	publicPemType  = "PUBLIC KEY"
 )
 
 func GenerateKey() (*ecdsa.PrivateKey, error) {
@@ -33,7 +33,7 @@ func GenerateKey() (*ecdsa.PrivateKey, error) {
 }
 
 func SavePEMKey(key *ecdsa.PrivateKey) error {
-	outFile, err := os.Create(filepath.Join(PATH, filepath.Base(PRIVATE_PEM_NAME)))
+	outFile, err := os.Create(filepath.Join(path, filepath.Base(privatePemName)))
 	if err != nil {
 		return err
 	}
@@ -45,7 +45,7 @@ func SavePEMKey(key *ecdsa.PrivateKey) error {
 	}
 
 	var privateKey = &pem.Block{
-		Type:  PRIVATE_PEM_TYPE,
+		Type:  privatePemType,
 		Bytes: keyBytes,
 	}
 
@@ -54,7 +54,7 @@ func SavePEMKey(key *ecdsa.PrivateKey) error {
 }
 
 func GetKeyFromPEMKey() (*ecdsa.PrivateKey, error) {
-	pemString, err := ioutil.ReadFile(filepath.Join(PATH, filepath.Base(PRIVATE_PEM_NAME)))
+	pemString, err := ioutil.ReadFile(filepath.Join(path, filepath.Base(privatePemName)))
 	if err != nil {
 		return nil, err
 	}
@@ -67,7 +67,7 @@ func GetKeyFromPEMKey() (*ecdsa.PrivateKey, error) {
 }
 
 func GetKeyStringFromPEMKey() (string, error) {
-	pemString, err := ioutil.ReadFile(filepath.Join(PATH, filepath.Base(PRIVATE_PEM_NAME)))
+	pemString, err := ioutil.ReadFile(filepath.Join(path, filepath.Base(privatePemName)))
 	if err != nil {
 		return "", err
 	}
@@ -81,11 +81,11 @@ func SavePublicPEMKey(pubkey *ecdsa.PublicKey) error {
 	}
 
 	var pemkey = &pem.Block{
-		Type:  PUBLIC_PEM_TYPE,
+		Type:  publicPemType,
 		Bytes: keyBytes,
 	}
 
-	pemfile, err := os.Create(filepath.Join(PATH, filepath.Base(PUBLIC_PEM_NAME)))
+	pemfile, err := os.Create(filepath.Join(path, filepath.Base(publicPemName)))
 	if err != nil {
 		return err
 	}
@@ -96,7 +96,7 @@ func SavePublicPEMKey(pubkey *ecdsa.PublicKey) error {
 }
 
 func GetPublicKeyFromPublicPEMKey() (*ecdsa.PublicKey, error) {
-	pemString, err := ioutil.ReadFile(filepath.Join(PATH, filepath.Base(PUBLIC_PEM_NAME)))
+	pemString, err := ioutil.ReadFile(filepath.Join(path, filepath.Base(publicPemName)))
 	if err != nil {
 		return nil, err
 	}
@@ -109,7 +109,7 @@ func GetPublicKeyFromPublicPEMKey() (*ecdsa.PublicKey, error) {
 }
 
 func GetPublicKeyStringFromPublicPEMKey() (string, error) {
-	pemString, err := ioutil.ReadFile(filepath.Join(PATH, filepath.Base(PUBLIC_PEM_NAME)))
+	pemString, err := ioutil.ReadFile(filepath.Join(path, filepath.Base(publicPemName)))
 	if err != nil {
 		return "", err
 	}
@@ -128,7 +128,7 @@ func GenerateSignature(transactionId string) (string, error) {
 		return "", err
 	}
 
-	signature := &Signature{
+	signature := &signature{
 		R: r,
 		S: s,
 	}
@@ -145,7 +145,7 @@ func GenerateSignature(transactionId string) (string, error) {
 func VerifySignature(publicKey *ecdsa.PublicKey, transactionId string, signature string) (bool, error) {
 	transactionIdBytes := []byte(transactionId)
 	hashed := sha256.Sum256(transactionIdBytes)
-	var sig Signature
+	var sig signature
 	signature_json, err := hex.DecodeString(signature)
 	if err != nil {
 		return false, err
