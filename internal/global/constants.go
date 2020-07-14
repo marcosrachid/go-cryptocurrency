@@ -30,7 +30,7 @@ const (
 	COINBASE = "Socialism will always fail"
 
 	// DIFFICULTY_ADJUSTMENT_BLOCK Network difficulty will be adjusted after every below number of blocks
-	DIFFICULTY_ADJUSTMENT_BLOCK uint64 = 2016
+	DIFFICULTY_ADJUSTMENT_BLOCK uint64 = 100
 
 	// END Network message end string
 	END = "\r\n\r\n"
