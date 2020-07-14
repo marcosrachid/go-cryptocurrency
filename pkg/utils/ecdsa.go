@@ -15,7 +15,7 @@ import (
 	"path/filepath"
 )
 
-type signature struct {
+type Signature struct {
 	R *big.Int `json:"r"`
 	S *big.Int `json:"s"`
 }
@@ -53,6 +53,18 @@ func SavePEMKey(key *ecdsa.PrivateKey) error {
 	return err
 }
 
+func ImportPEMKey(keyHexString string) (*ecdsa.PrivateKey, error) {
+	keyBytes, err := hex.DecodeString(keyHexString)
+	if err != nil {
+		return nil, err
+	}
+	key, err := x509.ParseECPrivateKey(keyBytes)
+	if err != nil {
+		return nil, err
+	}
+	return key, nil
+}
+
 func GetKeyFromPEMKey() (*ecdsa.PrivateKey, error) {
 	pemString, err := ioutil.ReadFile(filepath.Join(path, filepath.Base(privatePemName)))
 	if err != nil {
@@ -67,11 +79,17 @@ func GetKeyFromPEMKey() (*ecdsa.PrivateKey, error) {
 }
 
 func GetKeyStringFromPEMKey() (string, error) {
-	pemString, err := ioutil.ReadFile(filepath.Join(path, filepath.Base(privatePemName)))
+	key, err := GetKeyFromPEMKey()
 	if err != nil {
 		return "", err
 	}
-	return string(pemString), nil
+
+	keyBytes, err := x509.MarshalECPrivateKey(key)
+	if err != nil {
+		return "", err
+	}
+
+	return hex.EncodeToString(keyBytes), nil
 }
 
 func SavePublicPEMKey(pubkey *ecdsa.PublicKey) error {
@@ -109,11 +127,17 @@ func GetPublicKeyFromPublicPEMKey() (*ecdsa.PublicKey, error) {
 }
 
 func GetPublicKeyStringFromPublicPEMKey() (string, error) {
-	pemString, err := ioutil.ReadFile(filepath.Join(path, filepath.Base(publicPemName)))
+	pubkey, err := GetPublicKeyFromPublicPEMKey()
 	if err != nil {
 		return "", err
 	}
-	return string(pemString), nil
+
+	keyBytes, err := x509.MarshalPKIXPublicKey(pubkey)
+	if err != nil {
+		return "", err
+	}
+
+	return hex.EncodeToString(keyBytes), nil
 }
 
 func GenerateSignature(transactionId string) (string, error) {
@@ -121,35 +145,35 @@ func GenerateSignature(transactionId string) (string, error) {
 	if err != nil {
 		return "", err
 	}
-	transactionIdBytes := []byte(transactionId)
-	hashed := sha256.Sum256(transactionIdBytes)
+	transactionIDBytes := []byte(transactionId)
+	hashed := sha256.Sum256(transactionIDBytes)
 	r, s, err := ecdsa.Sign(rand.Reader, key, hashed[:])
 	if err != nil {
 		return "", err
 	}
 
-	signature := &signature{
+	signature := &Signature{
 		R: r,
 		S: s,
 	}
 
-	signature_json, err := json.Marshal(signature)
+	signatureJSON, err := json.Marshal(signature)
 	if err != nil {
 		return "", err
 	}
 
-	signature_hex := hex.EncodeToString(signature_json)
-	return signature_hex, nil
+	signatureHex := hex.EncodeToString(signatureJSON)
+	return signatureHex, nil
 }
 
 func VerifySignature(publicKey *ecdsa.PublicKey, transactionId string, signature string) (bool, error) {
-	transactionIdBytes := []byte(transactionId)
-	hashed := sha256.Sum256(transactionIdBytes)
-	var sig signature
-	signature_json, err := hex.DecodeString(signature)
+	transactionIDBytes := []byte(transactionId)
+	hashed := sha256.Sum256(transactionIDBytes)
+	var sig Signature
+	signatureJSON, err := hex.DecodeString(signature)
 	if err != nil {
 		return false, err
 	}
-	json.Unmarshal(signature_json, &sig)
+	json.Unmarshal(signatureJSON, &sig)
 	return ecdsa.Verify(publicKey, hashed[:], sig.R, sig.S), nil
 }

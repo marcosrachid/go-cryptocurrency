@@ -62,7 +62,7 @@ The arguments are:
 	-p, --public-key				show current public-key
 	-k, --private-key				show current private-key
 	-n, --new					generate new wallet
-	-i, --import [private-key path]			import a wallet
+	-i, --import [private-key hex string]			import a wallet
 	-b, --balance empty or [public-key] 		show balance from current wallet or specified public-key
 	-h, --help					shows help
 `

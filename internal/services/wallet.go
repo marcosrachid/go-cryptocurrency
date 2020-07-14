@@ -77,8 +77,26 @@ func WalletGenerate() (string, error) {
 
 func WalletImport(arguments []string) (string, error) {
 	if len(arguments) <= 0 {
-		return "", fmt.Errorf("Private key is mandatory")
+		return "", fmt.Errorf("Private key path is mandatory")
 	}
+	key, err := utils.ImportPEMKey(arguments[0])
+	if err != nil {
+		return "", err
+	}
+	publicKey := &key.PublicKey
+	err = utils.SavePEMKey(key)
+	if err != nil {
+		return "", err
+	}
+	err = utils.SavePublicPEMKey(publicKey)
+	if err != nil {
+		return "", err
+	}
+	publicKeyString, err := utils.GetPublicKeyStringFromPublicPEMKey()
+	if err != nil {
+		return "", err
+	}
+	return publicKeyString, nil
 }
 
 func Balance(arguments []string) (float64, error) {
