@@ -2,9 +2,10 @@ package utxo
 
 import (
 	"encoding/json"
-	"go-cryptocurrency/internal/db"
-	"go-cryptocurrency/internal/models"
-	"go-cryptocurrency/pkg/utils"
+
+	"github.com/marcosrachid/go-cryptocurrency/internal/db"
+	"github.com/marcosrachid/go-cryptocurrency/internal/models"
+	"github.com/marcosrachid/go-cryptocurrency/pkg/utils"
 )
 
 func Get(key string) (*[]models.TransactionOutput, error) {

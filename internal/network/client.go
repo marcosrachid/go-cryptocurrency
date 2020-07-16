@@ -3,11 +3,12 @@ package network
 import (
 	"encoding/json"
 	"fmt"
-	"go-cryptocurrency/internal/global"
-	"go-cryptocurrency/internal/models"
 	"net"
 	"os"
 	"strings"
+
+	"github.com/marcosrachid/go-cryptocurrency/internal/global"
+	"github.com/marcosrachid/go-cryptocurrency/internal/models"
 )
 
 func SocketClient(ip, port string, request models.CLIRequest) {

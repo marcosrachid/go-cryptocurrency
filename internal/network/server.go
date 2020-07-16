@@ -2,12 +2,13 @@ package network
 
 import (
 	"bufio"
-	"go-cryptocurrency/internal/global"
 	"io"
 	"log"
 	"net"
 	"os"
 	"strings"
+
+	"github.com/marcosrachid/go-cryptocurrency/internal/global"
 )
 
 func SocketServer(port string, handler func(string, *bufio.Writer)) {

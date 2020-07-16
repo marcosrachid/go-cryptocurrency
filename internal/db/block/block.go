@@ -3,9 +3,10 @@ package block
 import (
 	"encoding/json"
 	"fmt"
-	"go-cryptocurrency/internal/db"
-	"go-cryptocurrency/internal/models"
-	"go-cryptocurrency/pkg/utils"
+
+	"github.com/marcosrachid/go-cryptocurrency/internal/db"
+	"github.com/marcosrachid/go-cryptocurrency/internal/models"
+	"github.com/marcosrachid/go-cryptocurrency/pkg/utils"
 )
 
 func GetByHeight(height uint64) (*models.Block, error) {

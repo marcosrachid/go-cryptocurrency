@@ -3,14 +3,15 @@ package miner
 import (
 	"encoding/json"
 	"fmt"
-	"go-cryptocurrency/internal/db/block"
-	"go-cryptocurrency/internal/db/mempool"
-	"go-cryptocurrency/internal/db/utxo"
-	"go-cryptocurrency/internal/global"
-	"go-cryptocurrency/internal/models"
-	"go-cryptocurrency/internal/services"
-	"go-cryptocurrency/pkg/utils"
 	"os"
+
+	"github.com/marcosrachid/go-cryptocurrency/internal/db/block"
+	"github.com/marcosrachid/go-cryptocurrency/internal/db/mempool"
+	"github.com/marcosrachid/go-cryptocurrency/internal/db/utxo"
+	"github.com/marcosrachid/go-cryptocurrency/internal/global"
+	"github.com/marcosrachid/go-cryptocurrency/internal/models"
+	"github.com/marcosrachid/go-cryptocurrency/internal/services"
+	"github.com/marcosrachid/go-cryptocurrency/pkg/utils"
 )
 
 func MineBlocks() {

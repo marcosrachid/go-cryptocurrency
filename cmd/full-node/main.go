@@ -3,11 +3,11 @@ package main
 import (
 	"os"
 
-	"go-cryptocurrency/internal/db"
-	"go-cryptocurrency/internal/global"
-	"go-cryptocurrency/internal/network"
-	"go-cryptocurrency/internal/network/handler"
-	"go-cryptocurrency/internal/services"
+	"github.com/marcosrachid/go-cryptocurrency/internal/db"
+	"github.com/marcosrachid/go-cryptocurrency/internal/global"
+	"github.com/marcosrachid/go-cryptocurrency/internal/network"
+	"github.com/marcosrachid/go-cryptocurrency/internal/network/handler"
+	"github.com/marcosrachid/go-cryptocurrency/internal/services"
 
 	"github.com/joho/godotenv"
 )

@@ -2,8 +2,9 @@ package models
 
 import (
 	"fmt"
-	"go-cryptocurrency/pkg/utils"
 	"time"
+
+	"github.com/marcosrachid/go-cryptocurrency/pkg/utils"
 )
 
 type Transaction interface {

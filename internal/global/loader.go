@@ -1,8 +1,8 @@
 package global
 
 import (
-	"go-cryptocurrency/internal/db/block"
-	"go-cryptocurrency/pkg/utils"
+	"github.com/marcosrachid/go-cryptocurrency/internal/db/block"
+	"github.com/marcosrachid/go-cryptocurrency/pkg/utils"
 )
 
 func Load() error {

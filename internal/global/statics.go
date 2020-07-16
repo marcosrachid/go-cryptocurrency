@@ -1,6 +1,6 @@
 package global
 
-import "go-cryptocurrency/internal/models"
+import "github.com/marcosrachid/go-cryptocurrency/internal/models"
 
 var (
 	// PEERS List of Peers to be connect

@@ -2,10 +2,11 @@ package services
 
 import (
 	"fmt"
-	"go-cryptocurrency/internal/db/utxo"
-	"go-cryptocurrency/internal/models"
-	"go-cryptocurrency/pkg/utils"
 	"log"
+
+	"github.com/marcosrachid/go-cryptocurrency/internal/db/utxo"
+	"github.com/marcosrachid/go-cryptocurrency/internal/models"
+	"github.com/marcosrachid/go-cryptocurrency/pkg/utils"
 )
 
 func WalletStart() error {

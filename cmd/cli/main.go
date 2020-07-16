@@ -1,9 +1,10 @@
 package main
 
 import (
-	"go-cryptocurrency/internal/models"
-	"go-cryptocurrency/internal/network"
 	"os"
+
+	"github.com/marcosrachid/go-cryptocurrency/internal/models"
+	"github.com/marcosrachid/go-cryptocurrency/internal/network"
 
 	"github.com/joho/godotenv"
 )

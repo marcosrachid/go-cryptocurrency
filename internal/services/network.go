@@ -1,7 +1,7 @@
 package services
 
 import (
-	"go-cryptocurrency/internal/global"
+	"github.com/marcosrachid/go-cryptocurrency/internal/global"
 )
 
 func GetCirculatingSupply() float64 {

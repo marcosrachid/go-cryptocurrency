@@ -2,10 +2,11 @@ package services
 
 import (
 	"encoding/json"
-	"go-cryptocurrency/internal/db/block"
-	"go-cryptocurrency/internal/global"
 	"regexp"
 	"strconv"
+
+	"github.com/marcosrachid/go-cryptocurrency/internal/db/block"
+	"github.com/marcosrachid/go-cryptocurrency/internal/global"
 )
 
 func GetBlock(arguments []string) (string, error) {

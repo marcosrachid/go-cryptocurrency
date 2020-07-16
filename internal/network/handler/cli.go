@@ -4,10 +4,11 @@ import (
 	"bufio"
 	"encoding/json"
 	"fmt"
-	"go-cryptocurrency/internal/global"
-	"go-cryptocurrency/internal/models"
-	"go-cryptocurrency/internal/services"
 	"strings"
+
+	"github.com/marcosrachid/go-cryptocurrency/internal/global"
+	"github.com/marcosrachid/go-cryptocurrency/internal/models"
+	"github.com/marcosrachid/go-cryptocurrency/internal/services"
 )
 
 const (
@@ -24,9 +25,6 @@ The commands are:
 	blockHelp = `
 Command usage:
 	block [arguments]
-	block
-	block 1
-	block 7b86d8a6216ffb3eaa359d9f7358437dcd23a3703a8ede4e28783a1446f6da7d
 The arguments are:
 	?([0-9]+|[a-z0-9]{64})			show current block or from specified height or from specified hash
 	-e, --height ?[a-z0-9]{64} 		show current height or from specified hash

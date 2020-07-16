@@ -3,9 +3,10 @@ package models
 import (
 	"encoding/json"
 	"fmt"
-	"go-cryptocurrency/pkg/utils"
 	"strings"
 	"time"
+
+	"github.com/marcosrachid/go-cryptocurrency/pkg/utils"
 )
 
 type BlockData []Transaction
