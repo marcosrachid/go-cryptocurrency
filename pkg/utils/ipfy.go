@@ -6,8 +6,9 @@ import (
 	"net/http"
 )
 
+const url = "https://api.ipify.org?format=text"
+
 func GetPublicIP() (string, error) {
-	url := "https://api.ipify.org?format=text"
 	fmt.Printf("Getting IP address from  ipify ...\n")
 	resp, err := http.Get(url)
 	if err != nil {

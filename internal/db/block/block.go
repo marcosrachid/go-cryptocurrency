@@ -82,7 +82,7 @@ func DeleteByHeight(height uint64) error {
 	if err != nil {
 		return err
 	}
-	return db.Instance.Block.Delete([]byte(sha256), nil)
+	return db.Instance.Block.Delete(sha256, nil)
 }
 
 func DeleteByHash(hash string) error {
@@ -104,7 +104,7 @@ func DeleteByHash(hash string) error {
 	if err != nil {
 		return err
 	}
-	return db.Instance.Block.Delete([]byte(sha256), nil)
+	return db.Instance.Block.Delete(sha256, nil)
 }
 
 func Put(block models.Block) error {

@@ -5,7 +5,11 @@ import "github.com/marcosrachid/go-cryptocurrency/internal/models"
 var (
 	// PEERS List of Peers to be connect
 	PEERS []models.Peer = []models.Peer{
-		models.Peer{"main-node-1.coin.com", 8888, "miner"},
+		models.Peer{
+			Domain: "main-node-1.coin.com",
+			Port:   8888,
+			Type:   "miner",
+		},
 	}
 	// CURRENT_BLOCK Current block registered on node
 	CURRENT_BLOCK *models.Block = &models.Block{}

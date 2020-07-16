@@ -22,5 +22,8 @@ func main() {
 	}
 	command := argsWithoutProg[0]
 	arguments := argsWithoutProg[1:]
-	network.SocketClient(os.Getenv("CLI_HOST"), os.Getenv("CLI_PORT"), models.CLIRequest{command, arguments})
+	network.SocketClient(os.Getenv("CLI_HOST"), os.Getenv("CLI_PORT"), models.CLIRequest{
+		Command:   command,
+		Arguments: arguments,
+	})
 }
