@@ -10,10 +10,10 @@ import (
 )
 
 func WalletStart() error {
-	key, err := utils.GetKeyFromPEMKey()
+	_, err := utils.GetKeyFromPEMKey()
 	if err != nil {
 		log.Println("Wallet does not exist...\nAssigning a wallet")
-		key, err = utils.GenerateKey()
+		key, err := utils.GenerateKey()
 		if err != nil {
 			return err
 		}
