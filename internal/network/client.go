@@ -26,8 +26,7 @@ func SocketClient(ip, port string, request models.CLIRequest) {
 		fmt.Println(err)
 		os.Exit(1)
 	}
-	conn.Write([]byte(data))
-	conn.Write([]byte(global.END))
+	conn.Write([]byte(string(data) + global.END))
 
 	buff := make([]byte, 1024)
 	n, _ := conn.Read(buff)
