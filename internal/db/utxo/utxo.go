@@ -37,6 +37,14 @@ func Put(key string, utxo []models.TransactionOutput) error {
 func Add(utxo []models.TransactionOutput) {
 	m := make(map[string][]models.TransactionOutput)
 	for i := 0; i < len(utxo); i++ {
+		transactions, err := Get(utxo[i].Reciepient)
+		if err != nil {
+			continue
+		} else {
+			m[utxo[i].Reciepient] = *transactions
+		}
+	}
+	for i := 0; i < len(utxo); i++ {
 		if val, ok := m[utxo[i].Reciepient]; ok {
 			m[utxo[i].Reciepient] = append(val, utxo[i])
 		} else {

@@ -2,6 +2,8 @@ package services
 
 import (
 	"fmt"
+	"go-cryptocurrency/internal/db/utxo"
+	"go-cryptocurrency/internal/models"
 	"go-cryptocurrency/pkg/utils"
 	"log"
 )
@@ -100,5 +102,27 @@ func WalletImport(arguments []string) (string, error) {
 }
 
 func Balance(arguments []string) (float64, error) {
-	return 0.0, nil
+	var transactions []models.TransactionOutput = []models.TransactionOutput{}
+	var balance float64 = 0.0
+	if len(arguments) <= 0 {
+		pubkey, err := GetPublicKey()
+		if err != nil {
+			return 0.0, err
+		}
+		t, err := utxo.Get(pubkey)
+		if err != nil {
+			return 0.0, nil
+		}
+		transactions = append(transactions, *t...)
+	} else {
+		t, err := utxo.Get(arguments[0])
+		if err != nil {
+			return 0.0, nil
+		}
+		transactions = append(transactions, *t...)
+	}
+	for _, t := range transactions {
+		balance += t.Value
+	}
+	return balance, nil
 }
