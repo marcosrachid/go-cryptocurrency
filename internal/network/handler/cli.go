@@ -28,10 +28,10 @@ Command usage:
 	block 1
 	block 7b86d8a6216ffb3eaa359d9f7358437dcd23a3703a8ede4e28783a1446f6da7d
 The arguments are:
-	empty or [0-9]+ or [a-z0-9]{64}			show current block or from specified height or from specified hash
-	-e, --height empty or [a-z0-9]{64} 		show current height or from specified hash
-	-x, --hash empty or [0-9]+			show current hash or from specified height
-	-h, --help					shows help
+	?([0-9]+|[a-z0-9]{64})			show current block or from specified height or from specified hash
+	-e, --height ?[a-z0-9]{64} 		show current height or from specified hash
+	-x, --hash ?[0-9]+			show current hash or from specified height
+	-h, --help				shows help
 `
 	networkHelp = `
 Command usage:
@@ -51,9 +51,6 @@ Command usage:
 The arguments are:
 	-p, --priority [1|2|3] 		set the priority of transaction(being 1 the highest priority)
 	-d, --data (.)+			set generic data to be placed on transaction
-Examples:
-	transaction "MFkwEwYHKoZIzj0CAQYIKoZIzj0DAQcDQgAEP2egppaZKvyJ2r6+B2vEBBwSQP0B
-yiVVhTpH5PYh6vGiq8QGcqJOvtW6vq3fUGEEJdyXXi77EMgFP7LrdEIhYw==" 1
 `
 	keyHelp = `
 Command usage:
@@ -62,8 +59,8 @@ The arguments are:
 	-p, --public-key				show current public-key
 	-k, --private-key				show current private-key
 	-n, --new					generate new wallet
-	-i, --import [private-key hex string]			import a wallet
-	-b, --balance empty or [public-key] 		show balance from current wallet or specified public-key
+	-i, --import [private-key hex string]		import a wallet
+	-b, --balance ?[public-key] 			show balance from current wallet or specified public-key
 	-h, --help					shows help
 `
 )
