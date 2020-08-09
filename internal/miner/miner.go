@@ -51,7 +51,6 @@ func MineBlocks() {
 		}
 		transactions := make([]models.Transaction, 0)
 		for _, t := range transactionPool {
-			t.CalculateHash(difficulty)
 			transactions = append(transactions, t)
 			transactionsBytes, _ := json.Marshal(transactions)
 			if len(transactionsBytes) > int(global.BLOCK_SIZE) {

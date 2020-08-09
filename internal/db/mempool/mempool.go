@@ -10,8 +10,8 @@ import (
 	"github.com/syndtr/goleveldb/leveldb/iterator"
 )
 
-func Get(key string) (*models.SimpleTransaction, error) {
-	response, err := db.Instance.Mempool.Get([]byte(key), nil)
+func Get(transactionId string) (*models.SimpleTransaction, error) {
+	response, err := db.Instance.Mempool.Get([]byte(transactionId), nil)
 	if err != nil {
 		return nil, err
 	}
@@ -24,17 +24,17 @@ func Get(key string) (*models.SimpleTransaction, error) {
 	return transaction, nil
 }
 
-func Delete(key string) error {
-	return db.Instance.Mempool.Delete([]byte(key), nil)
+func Delete(transactionId string) error {
+	return db.Instance.Mempool.Delete([]byte(transactionId), nil)
 }
 
-func Put(key string, transaction models.SimpleTransaction) error {
+func Put(transactionId string, transaction models.SimpleTransaction) error {
 	data, err := json.Marshal(transaction)
 	if err != nil {
 		return err
 	}
 	compressed := utils.Compress(data)
-	return db.Instance.Mempool.Put([]byte(key), compressed, nil)
+	return db.Instance.Mempool.Put([]byte(transactionId), compressed, nil)
 }
 
 func Iterator() iterator.Iterator {

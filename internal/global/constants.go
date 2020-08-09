@@ -18,10 +18,8 @@ const (
 	// REWARD Mocked reward value to be given to miners, no halven implemented
 	REWARD float64 = 200.0
 
-	// P1_FEES Using static fees based on block transactions instead of bitcoin algorithm
-	P1_FEES float64 = 0.005
-	P2_FEES float64 = 0.0025
-	P3_FEES float64 = 0.001
+	// FEE Using static fees based on block transactions instead of bitcoin algorithm
+	FEE float64 = 0.005
 
 	// BLOCK_SIZE Max block transactions size in bytes on every block
 	BLOCK_SIZE uint64 = 1000000

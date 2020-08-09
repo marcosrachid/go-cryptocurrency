@@ -45,10 +45,7 @@ The arguments are:
 `
 	transactionHelp = `
 Command usage:
-	transaction [reciepient public-key] [decimal value] ?[arguments]
-The arguments are:
-	-p, --priority [1|2|3] 		set the priority of transaction(being 1 the highest priority)
-	-d, --data (.)+			set generic data to be placed on transaction
+	transaction [reciepient public-key] [decimal value] ?[data]
 `
 	keyHelp = `
 Command usage:
@@ -111,7 +108,7 @@ func networkCommands(arguments []string, writer *bufio.Writer) {
 	case strings.Compare(arguments[0], "-r") == 0 || strings.Compare(arguments[0], "--reward") == 0:
 		answer(fmt.Sprintf(global.DECIMAL_STRING, global.REWARD), writer)
 	case strings.Compare(arguments[0], "-f") == 0 || strings.Compare(arguments[0], "--fees") == 0:
-		answer(fmt.Sprintf("P1: %.2f%%, P2: %.2f%%, P3: %.2f%%", global.P1_FEES*100, global.P2_FEES*100, global.P3_FEES*100), writer)
+		answer(fmt.Sprintf("%.2f%%", global.FEE*100), writer)
 	case strings.Compare(arguments[0], "-b") == 0 || strings.Compare(arguments[0], "--block-size") == 0:
 		answer(fmt.Sprintf("%d bytes", global.BLOCK_SIZE), writer)
 	default:
