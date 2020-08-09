@@ -51,6 +51,7 @@ func MineBlocks() {
 		}
 		transactions := make([]models.Transaction, 0)
 		for _, t := range transactionPool {
+			mempool.Delete(t.GetTransactionId())
 			transactions = append(transactions, t)
 			transactionsBytes, _ := json.Marshal(transactions)
 			if len(transactionsBytes) > int(global.BLOCK_SIZE) {
@@ -96,11 +97,17 @@ func MineBlocks() {
 			fmt.Println(err)
 			continue
 		}
-		var u []models.TransactionOutput
+		var unspentTransactions map[string][]models.TransactionOutput = make(map[string][]models.TransactionOutput)
 		for _, t := range newBlock.Data {
-			u = append(u, t.GetOutputs()...)
+			for _, o := range t.GetOutputs() {
+				if val, ok := unspentTransactions[o.Reciepient]; ok {
+					unspentTransactions[o.Reciepient] = append(val, o)
+				} else {
+					unspentTransactions[o.Reciepient] = []models.TransactionOutput{o}
+				}
+			}
 		}
-		utxo.Add(u)
+		utxo.Add(unspentTransactions)
 		global.CURRENT_BLOCK = &newBlock
 		global.NETWORK_HEIGHT = newBlock.Height
 		fmt.Println("Block mined: ", newBlock.Hash)

@@ -75,7 +75,11 @@ func CreateSimpleTransaction(sender string, reciepient string, inputs []Transact
 	t := time.Now()
 	reciepientOutput := TransactionOutput{"", reciepient, value, t.UnixNano()}
 	reciepientOutput.calculateHash()
-	restOutput := TransactionOutput{"", reciepient, value, t.UnixNano()}
+	balance := 0.0
+	for _, input := range inputs {
+		balance += input.UnspentTransactionOutput.Value
+	}
+	restOutput := TransactionOutput{"", sender, balance - value, t.UnixNano()}
 	restOutput.calculateHash()
 	outputs := []TransactionOutput{
 		reciepientOutput,
